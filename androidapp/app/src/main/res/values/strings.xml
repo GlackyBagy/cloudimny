@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Cloudimny app</string>
+    <string name="setup_title">Let\'s setup\nyour server</string>
+
+    <string name="setup_address_hint">example.com:22 or 1.1.1.1:22</string>
+    <string name="setup_address_label">Server URI with port</string>
+    <string name="setup_username_label">SSH username</string>
+    <string name="setup_username_hint">root</string>
+    <string name="setup_password_label">Password</string>
+    <string name="setup_button">Setup</string>
+
+    <string name="invalid_address_message">Invalid address provided</string>
+    <string name="invalid_username_message">Invalid username provided</string>
+    <string name="invalid_password_message">Invalid password provided</string>
+    <string name="invalid_credentials_message">Invalid credentials, connection refused</string>
+    <string name="cannot_connect_message">Unable connect to the server</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="setting_server_up">Setting up\nyour server</string>
+    <string name="it_might_take_a_few_minutes">It might take a few minutes</string>
+</resources>
