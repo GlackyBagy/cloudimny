@@ -51,6 +51,15 @@ sudo mkdir -p "$APP_DIR"
 sudo curl -fsSL "$REPO_RAW_BASE/compose.yaml" -o "$APP_DIR/compose.yaml"
 sudo curl -fsSL "$REPO_RAW_BASE/Caddyfile" -o "$APP_DIR/Caddyfile"
 
-echo "PROVIDED_ADDRESS=${PROVIDED_ADDRESS}" | sudo tee "$APP_DIR/.env" > /dev/null
+if [[ "$PROVIDED_ADDRESS" == *:* ]]; then
+	CADDY_ADDRESS="[${PROVIDED_ADDRESS}]"
+else
+	CADDY_ADDRESS="${PROVIDED_ADDRESS}"
+fi
+
+{
+	echo "PROVIDED_ADDRESS=${PROVIDED_ADDRESS}"
+	echo "CADDY_ADDRESS=${CADDY_ADDRESS}"
+} | sudo tee "$APP_DIR/.env" > /dev/null
 
 sudo docker compose --project-directory "$APP_DIR" up -d

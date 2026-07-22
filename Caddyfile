@@ -1,4 +1,4 @@
-{$PROVIDED_ADDRESS} {
+{$CADDY_ADDRESS} {
 	tls /etc/ssl/cloudimny/server.crt /etc/ssl/cloudimny/server.key
 
 	respond "cloudimny is up" 200
