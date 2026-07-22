@@ -14,8 +14,10 @@
     <string name="invalid_password_message">Invalid password provided</string>
     <string name="invalid_credentials_message">Invalid credentials, connection refused</string>
     <string name="cannot_connect_message">Unable connect to the server</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="setting_server_up">Setting up\nyour server</string>
     <string name="it_might_take_a_few_minutes">It might take a few minutes</string>
+    <string name="setup_failed_message">Unable to configure server</string>
+    <string name="certificate_error_message">Unable to retrieve server certificate</string>
 </resources>
