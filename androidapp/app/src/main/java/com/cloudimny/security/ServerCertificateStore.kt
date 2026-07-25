@@ -9,24 +9,26 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import androidx.core.content.edit
+import com.cloudimny.AppPreferences
 
-private const val PREFERENCES_NAME = "server_data"
+private const val SERVER_PREFERENCES_NAME = "server_data"
 private const val FINGERPRINT_KEY = "certificate_sha256_fingerprint"
 private const val HOST_KEY = "server_host"
 
 object ServerCertificateStore {
     fun save(context: Context, fingerprint: String, host: String) {
-        preferences(context).edit {
+        AppPreferences.preferences(context, SERVER_PREFERENCES_NAME).edit {
             putString(FINGERPRINT_KEY, normalize(fingerprint))
             putString(HOST_KEY, host)
         }
     }
 
     fun fingerprint(context: Context): String? =
-        preferences(context).getString(FINGERPRINT_KEY, null)
+        AppPreferences.preferences(context, SERVER_PREFERENCES_NAME)
+            .getString(FINGERPRINT_KEY, null)
 
     fun host(context: Context): String? =
-        preferences(context).getString(HOST_KEY, null)
+        AppPreferences.preferences(context, SERVER_PREFERENCES_NAME).getString(HOST_KEY, null)
 
     fun sslContext(context: Context): SSLContext {
         val trustManager = pinningTrustManager(context)
@@ -65,6 +67,4 @@ object ServerCertificateStore {
     private fun normalize(fingerprint: String): String =
         fingerprint.replace(":", "").replace(" ", "").trim().uppercase()
 
-    private fun preferences(context: Context) =
-        context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
 }

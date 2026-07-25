@@ -19,5 +19,11 @@
     <string name="setting_server_up">Setting up\nyour server</string>
     <string name="it_might_take_a_few_minutes">It might take a few minutes</string>
     <string name="setup_failed_message">Unable to configure server</string>
+    <string name="setup_timeout_message">Server setup took too long</string>
     <string name="certificate_error_message">Unable to retrieve server certificate</string>
+    <string name="play_button">play_button</string>
+    <string name="track_cover">track_cover</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_add">Create</string>
 </resources>

@@ -7,10 +7,14 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.cloudimny.AppPreferences
 import com.cloudimny.R
 import com.cloudimny.models.SshConnectionCredentials
+import com.cloudimny.models.validation.SshValidationResult.INVALID_ADDRESS
+import com.cloudimny.models.validation.SshValidationResult.INVALID_PASSWORD
+import com.cloudimny.models.validation.SshValidationResult.INVALID_USERNAME
+import com.cloudimny.models.validation.SshValidationResult.VALID
 import com.cloudimny.models.validation.validateSshCredentials
-import com.cloudimny.models.validation.SshValidationResult.*
 import com.cloudimny.views.LoadingFragment
 
 private const val LOADING_FRAGMENT_TAG = "loading"
@@ -35,6 +39,16 @@ class SetupCredentialsFragment : Fragment(R.layout.fragment_setup_credentials) {
             if (messageResId != null) {
                 Toast.makeText(requireContext(), getString(messageResId), Toast.LENGTH_LONG).show()
                 hideLoadingFragment()
+            }
+        }
+
+        viewModel.completed.observe(viewLifecycleOwner) { completed ->
+            if (completed) {
+                AppPreferences.setAuthorized(requireContext(), true)
+
+                val intent = requireActivity().intent
+                requireActivity().finish()
+                startActivity(intent)
             }
         }
 
@@ -79,9 +93,12 @@ class SetupCredentialsFragment : Fragment(R.layout.fragment_setup_credentials) {
     }
 
     private fun hideLoadingFragment() {
-        val loadingFragment = parentFragmentManager.findFragmentByTag(LOADING_FRAGMENT_TAG) ?: return
+        val loadingFragment =
+            parentFragmentManager.findFragmentByTag(LOADING_FRAGMENT_TAG) ?: return
         parentFragmentManager.beginTransaction()
             .remove(loadingFragment)
             .commit()
     }
+
+
 }
