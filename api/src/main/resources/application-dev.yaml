@@ -1,0 +1,19 @@
+spring:
+  docker:
+    compose:
+      file: ./compose.yaml
+      lifecycle-management: start_only
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/cloudimny
+    username: cloudimny
+    password: cloudimny
+  flyway:
+    url: jdbc:postgresql://localhost:5432/cloudimny
+    locations: classpath:db/migration
+
+
+storage:
+  s3-endpoint: http://localhost:9000
+  s3-accessKey: minioadmin
+  s3-secretKey: minioadmin
