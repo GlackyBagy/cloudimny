@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.cloudimny.AppPreferences
 import com.cloudimny.R
+import com.cloudimny.views.home.HomeFragment
 import com.cloudimny.views.setup.SetupCredentialsFragment
 
 class MainActivity : AppCompatActivity() {

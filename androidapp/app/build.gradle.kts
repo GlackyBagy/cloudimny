@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.cloudimny"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -37,9 +37,13 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.recyclerview)
     implementation(libs.material)
     implementation(libs.sshj)
     implementation(libs.bcprov.jdk18on)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
     testRuntimeOnly(libs.junit.platform.launcher)

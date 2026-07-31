@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.cloudimny.R
 import com.cloudimny.models.SshConnectionCredentials
-import com.cloudimny.security.ServerCertificateStore
+import com.cloudimny.server.security.ServerCertificateStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.launch

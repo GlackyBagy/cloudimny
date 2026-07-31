@@ -1,4 +1,4 @@
-package com.cloudimny.security
+package com.cloudimny.server.security
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -31,14 +31,14 @@ object ServerCertificateStore {
         AppPreferences.preferences(context, SERVER_PREFERENCES_NAME).getString(HOST_KEY, null)
 
     fun sslContext(context: Context): SSLContext {
-        val trustManager = pinningTrustManager(context)
+        val trustManager = trustManager(context)
         return SSLContext.getInstance("TLS").apply {
             init(null, arrayOf<TrustManager>(trustManager), null)
         }
     }
 
     @SuppressLint("CustomX509TrustManager")
-    private fun pinningTrustManager(context: Context): X509TrustManager {
+    fun trustManager(context: Context): X509TrustManager {
         val pinnedFingerprint = fingerprint(context)
             ?: throw IllegalStateException("Server certificate fingerprint is not saved")
 
