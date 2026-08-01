@@ -1,60 +1,52 @@
 package com.cloudimny.views
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.cloudimny.R
+import com.cloudimny.player.PlayerViewModel
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class MiniPlayerFragment : Fragment(R.layout.fragment_mini_player) {
+    private val playerViewModel: PlayerViewModel by activityViewModels()
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MiniPlayerFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MiniPlayerFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        val trackTitle: TextView = view.findViewById(R.id.track_title)
+        val trackArtist: TextView = view.findViewById(R.id.track_artist)
+        val playButton: ImageButton = view.findViewById(R.id.play_button)
+
+        view.visibility = View.GONE
+
+        playButton.setOnClickListener {
+            playerViewModel.togglePlayPause()
         }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mini_player, container, false)
-    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    playerViewModel.currentTrack.collect { track ->
+                        view.visibility = if (track == null) View.GONE else View.VISIBLE
+                        trackTitle.text = track?.title
+                        trackArtist.text = track?.artist?.nickname
+                    }
+                }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MiniPlayerFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MiniPlayerFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                launch {
+                    playerViewModel.isPlaying.collect { isPlaying ->
+                        playButton.setImageResource(
+                            if (isPlaying) R.drawable.pause_icon else R.drawable.play_arrow_icon
+                        )
+                    }
                 }
             }
+        }
     }
 }

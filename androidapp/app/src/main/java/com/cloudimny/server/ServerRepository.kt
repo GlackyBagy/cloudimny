@@ -32,7 +32,7 @@ interface TrackApi {
     @Multipart
     @POST("api/v1/upload")
     suspend fun uploadTrack(
-        @Part("track") track: RequestBody,
+        @Part("meta") track: RequestBody,
         @Part file: MultipartBody.Part
     ): Track
 }
@@ -42,7 +42,8 @@ object ServerRepository {
         RetrofitClient.trackApi(context).getAllTracks()
 
     suspend fun uploadTrack(context: Context, fileUri: Uri, title: String, artist: String): Track {
-        val track = Track(null, title, Artist(null, artist)) // using null, bc objects (may) not exist
+        val track =
+            Track(null, title, Artist(null, artist)) // using null, bc objects (may) not exist
         val trackPart = RetrofitClient.gson.toJson(track)
             .toRequestBody("application/json".toMediaType())
 
@@ -68,11 +69,14 @@ object ServerRepository {
                 input.use { sink.writeAll(it.source()) }
             }
         }
+
+    fun streamingUrl(context: Context, trackId: UUID): String =
+        "${RetrofitClient.baseUrl(context)}api/v1/streaming/$trackId"
 }
 
 private object RetrofitClient {
     private var trackApi: TrackApi? = null
-    private var cachedHost: String? = null
+    private var cachedBaseUrl: String? = null
 
     val gson = GsonBuilder()
         .registerTypeAdapter(UUID::class.java, object : TypeAdapter<UUID>() {
@@ -84,12 +88,17 @@ private object RetrofitClient {
         })
         .create()
 
-    fun trackApi(context: Context): TrackApi {
+    fun baseUrl(context: Context): String {
         val host = ServerCertificateStore.host(context)
             ?: error("Server host is not configured")
+        return "https://$host/"
+    }
+
+    fun trackApi(context: Context): TrackApi {
+        val baseUrl = baseUrl(context)
 
         var api = trackApi
-        if (api == null || cachedHost != host) {
+        if (api == null || cachedBaseUrl != baseUrl) {
             val client = OkHttpClient.Builder()
                 .sslSocketFactory(
                     ServerCertificateStore.sslContext(context).socketFactory,
@@ -98,14 +107,14 @@ private object RetrofitClient {
                 .build()
 
             api = Retrofit.Builder()
-                .baseUrl("https://$host/")
+                .baseUrl(baseUrl)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(TrackApi::class.java)
 
             trackApi = api
-            cachedHost = host
+            cachedBaseUrl = baseUrl
         }
 
         return api

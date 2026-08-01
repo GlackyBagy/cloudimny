@@ -20,6 +20,7 @@ import androidx.work.WorkManager
 import com.cloudimny.R
 import com.cloudimny.server.TrackUploadWorker
 import com.cloudimny.util.displayName
+import com.cloudimny.views.MainActivity
 
 class UploadTrackFragment : Fragment(R.layout.fragment_upload_track) {
 
@@ -36,10 +37,12 @@ class UploadTrackFragment : Fragment(R.layout.fragment_upload_track) {
         }
 
     private val requestNotificationPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* upload proceeds either way */ }
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { enqueueUpload() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (requireActivity() as MainActivity).setHeaderTitle(getString(R.string.upload_track_title))
 
         val chooseFileButton: Button = view.findViewById(R.id.choose_file_button)
         chosenFileName = view.findViewById(R.id.chosen_file_name)
@@ -48,7 +51,7 @@ class UploadTrackFragment : Fragment(R.layout.fragment_upload_track) {
         uploadButton = view.findViewById(R.id.upload_button)
 
         chooseFileButton.setOnClickListener {
-            pickAudioFile.launch(arrayOf("audio/*"))
+            pickAudioFile.launch(arrayOf("audio/*", "video/webm"))
         }
 
         uploadButton.setOnClickListener {
@@ -86,17 +89,24 @@ class UploadTrackFragment : Fragment(R.layout.fragment_upload_track) {
     }
 
     private fun startUpload() {
-        val uri = selectedFileUri ?: return
-        val title = titleInput.text.toString().trim()
-        val artist = artistInput.text.toString().trim()
-        if (title.isEmpty() || artist.isEmpty()) return
+        if (selectedFileUri == null) return
+        if (titleInput.text.isNullOrBlank() || artistInput.text.isNullOrBlank()) return
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS)
             != PackageManager.PERMISSION_GRANTED
         ) {
             requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            enqueueUpload()
         }
+    }
+
+    private fun enqueueUpload() {
+        val uri = selectedFileUri ?: return
+        val title = titleInput.text.toString().trim()
+        val artist = artistInput.text.toString().trim()
+        if (title.isEmpty() || artist.isEmpty()) return
 
         val inputData = Data.Builder()
             .putString(TrackUploadWorker.KEY_URI, uri.toString())
