@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="24dp"
+    android:paddingTop="32dp"
+    tools:context=".views.upload.UploadTrackFragment">
+
+    <Button
+        android:id="@+id/choose_file_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/choose_file_button"
+        android:textColor="@color/text_primary" />
+
+    <TextView
+        android:id="@+id/chosen_file_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="middle"
+        android:maxLines="1"
+        android:text="@string/no_file_chosen"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:labelFor="@id/track_title_input"
+        android:text="@string/track_title_label"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/track_title_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_secondary" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:labelFor="@id/track_artist_input"
+        android:text="@string/track_artist_label"
+        android:textColor="@color/text_primary"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/track_artist_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:textColor="@color/text_primary"
+        android:textColorHint="@color/text_secondary" />
+
+    <Button
+        android:id="@+id/upload_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:enabled="false"
+        android:text="@string/upload_button"
+        android:textColor="@color/text_primary" />
+
+</LinearLayout>

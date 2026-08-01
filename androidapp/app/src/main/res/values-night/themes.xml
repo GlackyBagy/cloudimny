@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Androidapp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Fonts -->
+        <item name="android:fontFamily">@font/rubik_medium</item>
+        <item name="fontFamily">@font/rubik_medium</item>
+
+        <!-- Colors (same palette as light theme for now — split into colors-night.xml if you design a separate dark palette) -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+        <item name="android:textColorPrimary">?attr/colorOnBackground</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="android:textColorHint">?attr/colorOnSurfaceVariant</item>
+    </style>
+</resources>

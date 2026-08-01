@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">Cloudimny</string>
+    <string name="setup_title">Let\'s setup\nyour server</string>
+
+    <string name="setup_address_hint">example.com:22 or 1.1.1.1:22</string>
+    <string name="setup_address_label">Server URI with port</string>
+    <string name="setup_username_label">SSH username</string>
+    <string name="setup_username_hint">root</string>
+    <string name="setup_password_label">Password</string>
+    <string name="setup_button">Setup</string>
+
+    <string name="invalid_address_message">Invalid address provided</string>
+    <string name="invalid_username_message">Invalid username provided</string>
+    <string name="invalid_password_message">Invalid password provided</string>
+    <string name="invalid_credentials_message">Invalid credentials, connection refused</string>
+    <string name="cannot_connect_message">Unable connect to the server</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="setting_server_up">Setting up\nyour server</string>
+    <string name="it_might_take_a_few_minutes">It might take a few minutes</string>
+    <string name="setup_failed_message">Unable to configure server</string>
+    <string name="setup_timeout_message">Server setup took too long</string>
+    <string name="certificate_error_message">Unable to retrieve server certificate</string>
+    <string name="play_button">play_button</string>
+    <string name="track_cover">track_cover</string>
+    <string name="previous_track_button">previous_track_button</string>
+    <string name="next_track_button">next_track_button</string>
+    <string name="close_player_button">close_player_button</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_add">Create</string>
+    <string name="all_tracks">All tracks</string>
+    <string name="all_playlists">All playlists</string>
+    <string name="see_all_tracks_button">see_all_tracks_button</string>
+    <string name="see_all_playlists_button">see_all_playlists_button</string>
+    <string name="playlist_cover">playlist_cover</string>
+    <string name="playlist_track_count">%1$d tracks</string>
+    <string name="no_playlists_yet">No playlists yet</string>
+    <string name="menu_upload_track">Upload track</string>
+    <string name="menu_create_playlist">Create playlist</string>
+    <string name="uploading_track_title">Uploading %1$s</string>
+    <string name="upload_track_title">Upload track</string>
+    <string name="choose_file_button">Choose audio file</string>
+    <string name="no_file_chosen">No file chosen</string>
+    <string name="track_title_label">Title</string>
+    <string name="track_artist_label">Artist</string>
+    <string name="upload_button">Upload</string>
+    <string name="create_playlist_title">Create playlist</string>
+    <string name="playlist_name_label">Name</string>
+    <string name="playlist_name_hint">My playlist</string>
+    <string name="playlist_tracks_label">Tracks</string>
+    <string name="create_button">Create</string>
+    <string name="search_hint">Search tracks and playlists</string>
+    <string name="search_tracks_header">Tracks</string>
+    <string name="search_playlists_header">Playlists</string>
+    <string name="no_search_results">No results</string>
+</resources>
