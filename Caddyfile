@@ -3,10 +3,13 @@
 	# not an ACME/Let's Encrypt cert — there's no public domain to validate
 	# against for an arbitrary self-hosted IP/hostname, so Caddy's normal
 	# automatic-HTTPS flow doesn't apply here; we hand it the files directly.
+	#
+	# This must stay the ONLY site bound to :443. Clients connecting to a
+	# bare IP (which is the normal case here) don't send SNI, so Caddy can't
+	# pick a certificate by SNI-based routing — a second competing site on
+	# the same port (there used to be a ":80, :443 { abort }" catch-all)
+	# makes Caddy require SNI to disambiguate, and the handshake fails with
+	# a TLS internal_error for any client that omits it.
 	tls /etc/ssl/cloudimny/server.crt /etc/ssl/cloudimny/server.key
 	reverse_proxy api:8080
-}
-
-:80, :443 {
-	abort
 }
