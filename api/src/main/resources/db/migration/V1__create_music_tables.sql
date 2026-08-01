@@ -9,7 +9,7 @@ CREATE TABLE tracks
     id          UUID PRIMARY KEY      DEFAULT gen_random_uuid(),
     title       VARCHAR(255) NOT NULL,
     artist_id   UUID         NOT NULL REFERENCES artists (id),
-    timestamp   TIMESTAMP    NOT NULL DEFAULT NOW() AT TIME ZONE 'UTC',
+    timestamp   TIMESTAMP    NOT NULL DEFAULT (NOW() AT TIME ZONE 'UTC'),
     storage_key VARCHAR(255)
 );
 
