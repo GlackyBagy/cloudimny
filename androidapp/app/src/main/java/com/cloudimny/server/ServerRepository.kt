@@ -3,6 +3,7 @@ package com.cloudimny.server
 import android.content.Context
 import android.net.Uri
 import com.cloudimny.models.meta.Artist
+import com.cloudimny.models.meta.Playlist
 import com.cloudimny.models.meta.Track
 import com.cloudimny.server.security.ServerCertificateStore
 import com.cloudimny.util.displayName
@@ -19,11 +20,15 @@ import okio.BufferedSink
 import okio.source
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
 import java.util.UUID
+
+data class CreatePlaylistRequest(val name: String, val trackIds: List<UUID>)
 
 interface TrackApi {
     @GET("api/v1/track")
@@ -35,6 +40,15 @@ interface TrackApi {
         @Part("meta") track: RequestBody,
         @Part file: MultipartBody.Part
     ): Track
+
+    @GET("api/v1/playlist")
+    suspend fun getAllPlaylists(): List<Playlist>
+
+    @GET("api/v1/playlist/{id}")
+    suspend fun getPlaylist(@Path("id") id: UUID): Playlist
+
+    @POST("api/v1/playlist")
+    suspend fun createPlaylist(@Body request: CreatePlaylistRequest): Playlist
 }
 
 object ServerRepository {
@@ -72,6 +86,15 @@ object ServerRepository {
 
     fun streamingUrl(context: Context, trackId: UUID): String =
         "${RetrofitClient.baseUrl(context)}api/v1/streaming/$trackId"
+
+    suspend fun loadAllPlaylists(context: Context): List<Playlist> =
+        RetrofitClient.trackApi(context).getAllPlaylists()
+
+    suspend fun loadPlaylist(context: Context, id: UUID): Playlist =
+        RetrofitClient.trackApi(context).getPlaylist(id)
+
+    suspend fun createPlaylist(context: Context, name: String, trackIds: List<UUID>): Playlist =
+        RetrofitClient.trackApi(context).createPlaylist(CreatePlaylistRequest(name, trackIds))
 }
 
 private object RetrofitClient {

@@ -30,6 +30,12 @@
     <string name="nav_search">Search</string>
     <string name="nav_add">Create</string>
     <string name="all_tracks">All tracks</string>
+    <string name="all_playlists">All playlists</string>
+    <string name="see_all_tracks_button">see_all_tracks_button</string>
+    <string name="see_all_playlists_button">see_all_playlists_button</string>
+    <string name="playlist_cover">playlist_cover</string>
+    <string name="playlist_track_count">%1$d tracks</string>
+    <string name="no_playlists_yet">No playlists yet</string>
     <string name="menu_upload_track">Upload track</string>
     <string name="menu_create_playlist">Create playlist</string>
     <string name="uploading_track_title">Uploading %1$s</string>
@@ -39,4 +45,9 @@
     <string name="track_title_label">Title</string>
     <string name="track_artist_label">Artist</string>
     <string name="upload_button">Upload</string>
+    <string name="create_playlist_title">Create playlist</string>
+    <string name="playlist_name_label">Name</string>
+    <string name="playlist_name_hint">My playlist</string>
+    <string name="playlist_tracks_label">Tracks</string>
+    <string name="create_button">Create</string>
 </resources>

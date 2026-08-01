@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.cloudimny.R
 import com.cloudimny.views.home.HomeFragment
+import com.cloudimny.views.playlist.CreatePlaylistFragment
 import com.cloudimny.views.upload.UploadTrackFragment
 
 class NavigationMenuFragment : Fragment(R.layout.fragment_navigation_menu) {
@@ -62,7 +63,10 @@ class NavigationMenuFragment : Fragment(R.layout.fragment_navigation_menu) {
                     true
                 }
                 R.id.action_create_playlist -> {
-                    // TODO: показать диалог создания плейлиста
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.main, CreatePlaylistFragment())
+                        .addToBackStack(null)
+                        .commit()
                     true
                 }
                 else -> false
