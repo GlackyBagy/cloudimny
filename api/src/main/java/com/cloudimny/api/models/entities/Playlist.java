@@ -6,5 +6,5 @@ import org.springframework.data.relational.core.mapping.Table;
 import java.util.UUID;
 
 @Table("playlists")
-public record Playlist(@Id UUID id) {
+public record Playlist(@Id UUID id, String name) {
 }

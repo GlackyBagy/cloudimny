@@ -1,12 +1,14 @@
 package com.cloudimny.api.controllers;
 
 import com.cloudimny.api.models.dto.ArtistDTO;
+import com.cloudimny.api.models.dto.PlaylistDTO;
 import com.cloudimny.api.models.dto.TrackDTO;
 import com.cloudimny.api.models.entities.Artist;
 import com.cloudimny.api.models.entities.Track;
 import com.cloudimny.api.models.mapping.ArtistMapper;
 import com.cloudimny.api.models.mapping.TrackMapper;
 import com.cloudimny.api.models.payload.ArtistPayload;
+import com.cloudimny.api.models.payload.PlaylistPayload;
 import com.cloudimny.api.models.payload.TrackPayload;
 import com.cloudimny.api.services.ArtistService;
 import com.cloudimny.api.services.PlaylistService;
@@ -45,8 +47,19 @@ public class MetadataController {
 
 
     @PostMapping("/playlist")
-    public Mono<Void> createPlaylist() {
-        return playlistService.create().then();
+    public Mono<PlaylistDTO> createPlaylist(@RequestBody PlaylistPayload payload) {
+        return playlistService.create(payload.name(), payload.trackIds())
+                .flatMap(playlistService::toDTO);
+    }
+
+    @GetMapping("/playlist")
+    public Flux<PlaylistDTO> allPlaylists() {
+        return playlistService.findAll().concatMap(playlistService::toDTO);
+    }
+
+    @GetMapping("/playlist/{id}")
+    public Mono<PlaylistDTO> getPlaylist(@PathVariable UUID id) {
+        return playlistService.findById(id).flatMap(playlistService::toDTO);
     }
 
     @GetMapping("/track")
