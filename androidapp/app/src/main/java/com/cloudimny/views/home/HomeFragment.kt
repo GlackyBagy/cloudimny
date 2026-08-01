@@ -27,7 +27,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             view.findViewById<RecyclerView>(R.id.all_tracks_list).apply {
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = TrackAdapter(allTracks) { track ->
-                    playerViewModel.play(track)
+                    playerViewModel.play(allTracks, track)
                 }
             }
         }

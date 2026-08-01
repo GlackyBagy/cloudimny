@@ -30,10 +30,41 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             override fun onPlayerError(error: PlaybackException) {
                 _isPlaying.value = false
             }
+
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_ENDED) {
+                    PlaybackQueue.next()?.let { startPlayback(it) }
+                }
+            }
         })
     }
 
     fun play(track: Track) {
+        if (!PlaybackQueue.moveTo(track)) {
+            PlaybackQueue.set(listOf(track), 0)
+        }
+        startPlayback(track)
+    }
+
+    fun play(tracks: List<Track>, track: Track) {
+        val startIndex = tracks.indexOfFirst { it.id == track.id }.takeIf { it != -1 } ?: 0
+        PlaybackQueue.set(tracks, startIndex)
+        startPlayback(track)
+    }
+
+    fun playNext(): Boolean {
+        val next = PlaybackQueue.next() ?: return false
+        startPlayback(next)
+        return true
+    }
+
+    fun playPrevious(): Boolean {
+        val previous = PlaybackQueue.previous() ?: return false
+        startPlayback(previous)
+        return true
+    }
+
+    private fun startPlayback(track: Track) {
         val trackId = track.id ?: return
 
         if (_currentTrack.value?.id == trackId) {
