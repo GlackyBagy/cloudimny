@@ -60,6 +60,7 @@ fi
 {
 	echo "PROVIDED_ADDRESS=${PROVIDED_ADDRESS}"
 	echo "CADDY_ADDRESS=${CADDY_ADDRESS}"
+	echo "AUTH_SECRET=${AUTH_SECRET}"
 } | sudo tee "$APP_DIR/.env" > /dev/null
 
 sudo docker compose --project-directory "$APP_DIR" up -d

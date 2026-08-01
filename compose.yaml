@@ -14,6 +14,40 @@ services:
       - caddy_data:/data
       - caddy_config:/config
 
+  api:
+    image: ghcr.io/glackybagy/cloudimny-api:latest
+    env_file: "/opt/cloudimny/.env"
+    environment:
+      DB_HOST: db
+      DB_USER: cloudimny
+      DB_PASSWORD: cloudimny
+      S3_ENDPOINT: media-storage:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+
+  # not using strong passwords because services only accessible via api
+  media-storage:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cloudimny
+      POSTGRES_PASSWORD: cloudimny
+      POSTGRES_DB: cloudimny
+    volumes:
+      - sql_data:/var/lib/postgresql/data
+
 volumes:
   caddy_data:
   caddy_config:
+  minio_data:
+  sql_data:
