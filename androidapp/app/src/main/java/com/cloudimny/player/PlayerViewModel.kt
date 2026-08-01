@@ -50,6 +50,11 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     fun togglePlayPause() {
         if (player.playbackState == Player.STATE_IDLE) return
+        if (player.playbackState == Player.STATE_ENDED) {
+            player.seekTo(0)
+            player.playWhenReady = true
+            return
+        }
         player.playWhenReady = !player.playWhenReady
     }
 
