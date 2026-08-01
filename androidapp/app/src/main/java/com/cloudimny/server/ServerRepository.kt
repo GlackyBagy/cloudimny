@@ -100,6 +100,17 @@ private object RetrofitClient {
         var api = trackApi
         if (api == null || cachedBaseUrl != baseUrl) {
             val client = OkHttpClient.Builder()
+                .addInterceptor { chain ->
+                    val secret = ServerCertificateStore.authSecret(context)
+                    val request = if (secret != null) {
+                        chain.request().newBuilder()
+                            .addHeader("Authorization", secret)
+                            .build()
+                    } else {
+                        chain.request()
+                    }
+                    chain.proceed(request)
+                }
                 .sslSocketFactory(
                     ServerCertificateStore.sslContext(context).socketFactory,
                     ServerCertificateStore.trustManager(context)

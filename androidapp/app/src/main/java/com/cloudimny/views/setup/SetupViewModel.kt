@@ -16,6 +16,7 @@ import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier
 import net.schmizz.sshj.userauth.UserAuthException
 import java.io.IOException
+import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -43,8 +44,11 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
                     client.connection.keepAlive.keepAliveInterval = keepAliveIntervalSeconds
                     _connected.postValue(true)
 
+                    val authSecret = generateAuthSecret()
+
                     val command = "echo ${shellQuote(credentials.password)} | sudo -S -v && " +
                             "export PROVIDED_ADDRESS=${shellQuote(credentials.host)} && " +
+                            "export AUTH_SECRET=${shellQuote(authSecret)} && " +
                             "curl -fsSL -O $setupScriptUrl && " +
                             "bash setup-script.bash > /tmp/cloudimny-setup.log 2>&1 && " +
                             "sudo openssl x509 -in $remoteCertificatePath -noout -fingerprint -sha256"
@@ -73,7 +77,7 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
                         return@launch
                     }
 
-                    ServerCertificateStore.save(getApplication(), fingerprint, credentials.host)
+                    ServerCertificateStore.save(getApplication(), fingerprint, credentials.host, authSecret)
                 }
                 _completed.postValue(true)
             } catch (_: UserAuthException) {
@@ -100,4 +104,10 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun shellQuote(value: String): String =
         "'" + value.replace("'", "'\\''") + "'"
+
+    private fun generateAuthSecret(): String {
+        val bytes = ByteArray(32)
+        SecureRandom().nextBytes(bytes)
+        return bytes.joinToString("") { "%02x".format(it) }
+    }
 }

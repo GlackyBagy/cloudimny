@@ -14,12 +14,14 @@ import com.cloudimny.AppPreferences
 private const val SERVER_PREFERENCES_NAME = "server_data"
 private const val FINGERPRINT_KEY = "certificate_sha256_fingerprint"
 private const val HOST_KEY = "server_host"
+private const val AUTH_SECRET_KEY = "auth_secret"
 
 object ServerCertificateStore {
-    fun save(context: Context, fingerprint: String, host: String) {
+    fun save(context: Context, fingerprint: String, host: String, authSecret: String) {
         AppPreferences.preferences(context, SERVER_PREFERENCES_NAME).edit {
             putString(FINGERPRINT_KEY, normalize(fingerprint))
             putString(HOST_KEY, host)
+            putString(AUTH_SECRET_KEY, authSecret)
         }
     }
 
@@ -29,6 +31,9 @@ object ServerCertificateStore {
 
     fun host(context: Context): String? =
         AppPreferences.preferences(context, SERVER_PREFERENCES_NAME).getString(HOST_KEY, null)
+
+    fun authSecret(context: Context): String? =
+        AppPreferences.preferences(context, SERVER_PREFERENCES_NAME).getString(AUTH_SECRET_KEY, null)
 
     fun sslContext(context: Context): SSLContext {
         val trustManager = trustManager(context)
