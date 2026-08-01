@@ -70,15 +70,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <SeekBar
+        android:id="@+id/track_seek_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="16dp"
+        android:maxHeight="4dp"
+        android:minHeight="4dp"
+        android:paddingHorizontal="0dp"
+        android:progressDrawable="@drawable/player_seekbar_progress"
+        android:splitTrack="false"
+        android:thumb="@drawable/player_seekbar_thumb"
+        app:layout_constraintTop_toBottomOf="@id/track_artist"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <LinearLayout
         android:id="@+id/controls"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="32dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/track_artist"
+        app:layout_constraintTop_toBottomOf="@id/track_seek_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">

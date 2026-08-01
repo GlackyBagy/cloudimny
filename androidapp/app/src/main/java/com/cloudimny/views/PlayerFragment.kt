@@ -3,6 +3,7 @@ package com.cloudimny.views
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
+import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -36,6 +37,21 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
         val previousButton: ImageButton = view.findViewById(R.id.previous_button)
         val nextButton: ImageButton = view.findViewById(R.id.next_button)
         val closeButton: ImageButton = view.findViewById(R.id.close_button)
+        val seekBar: SeekBar = view.findViewById(R.id.track_seek_bar)
+
+        var isUserSeeking = false
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {}
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                isUserSeeking = true
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                isUserSeeking = false
+                playerViewModel.seekTo(seekBar.progress.toLong())
+            }
+        })
 
         closeButton.setOnClickListener {
             parentFragmentManager.popBackStack()
@@ -67,6 +83,20 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
                         playButton.setImageResource(
                             if (isPlaying) R.drawable.pause_icon else R.drawable.play_arrow_icon
                         )
+                    }
+                }
+
+                launch {
+                    playerViewModel.duration.collect { duration ->
+                        seekBar.max = duration.toInt().coerceAtLeast(0)
+                    }
+                }
+
+                launch {
+                    playerViewModel.position.collect { position ->
+                        if (!isUserSeeking) {
+                            seekBar.progress = position.toInt().coerceAtLeast(0)
+                        }
                     }
                 }
 
