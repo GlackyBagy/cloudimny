@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -20,8 +21,9 @@ public class TrackService {
     private final TrackMapper trackMapper;
 
     public Mono<Track> create(TrackPayload payload) {
-        return artistService.createFromNickname(payload.artistPayload().nickname())
+        return artistService.createFromNickname(payload.artist().nickname())
                 .map(artist -> trackMapper.toTrack(payload, null, artist.id()))
+                .map(track -> new Track(track.id(), track.title(), track.artistId(), track.storageKey(), Instant.now()))
                 .flatMap(repository::save);
     }
 
@@ -35,8 +37,14 @@ public class TrackService {
 
     public Mono<Track> update(UUID id, TrackPayload payload) {
         return repository.findById(id)
-                .flatMap(existing -> artistService.createFromNickname(payload.artistPayload().nickname())
-                        .map(artist -> trackMapper.toTrack(payload, existing.id(), artist.id())))
+                .flatMap(existing -> artistService.createFromNickname(payload.artist().nickname())
+                        .map(artist -> new Track(
+                                existing.id(),
+                                payload.title(),
+                                artist.id(),
+                                existing.storageKey(),
+                                existing.timestamp()
+                        )))
                 .flatMap(repository::save);
     }
 

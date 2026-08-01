@@ -18,8 +18,8 @@ public class ArtistService {
     private final ArtistMapper artistMapper;
 
     public Mono<Artist> createFromNickname(String nickname) {
-        return repository.findByNicknameIgnoreCase(nickname)
-                .switchIfEmpty(repository.save(new Artist(null, nickname)));
+        return repository.findByNicknameIgnoreCase(nickname.trim())
+                .switchIfEmpty(repository.save(new Artist(null, nickname.trim())));
     }
 
     public Mono<Artist> findById(UUID id) {
@@ -36,7 +36,7 @@ public class ArtistService {
                 .flatMap(repository::save);
     }
 
-    public Flux<Artist> findAll(){
+    public Flux<Artist> findAll() {
         return repository.findAll();
     }
 

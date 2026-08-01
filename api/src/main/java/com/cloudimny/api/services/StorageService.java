@@ -69,20 +69,26 @@ public class StorageService {
     }
 
     public Mono<Void> upload(String key, FilePart file) {
-        String contentType = MediaType.MULTIPART_FORM_DATA_VALUE;
+        return DataBufferUtils.join(file.content())
+                .flatMap(dataBuffer -> {
+                    ByteBuffer buffer = toByteBuffer(dataBuffer);
 
-        var request = PutObjectRequest.builder()
-                .key(key)
-                .bucket(BUCKET_NAME)
-                .contentType(contentType)
-                .build();
+                    var request = PutObjectRequest.builder()
+                            .key(key)
+                            .bucket(BUCKET_NAME)
+                            .contentType(contentTypeOf(file))
+                            .contentLength((long) buffer.remaining())
+                            .build();
 
-        var putObject = s3Client.putObject(
-                request,
-                AsyncRequestBody.fromPublisher(file.content().map(this::toByteBuffer))
-        );
+                    var putObject = s3Client.putObject(request, AsyncRequestBody.fromByteBuffer(buffer));
+                    return Mono.fromFuture(putObject);
+                })
+                .then();
+    }
 
-        return Mono.fromFuture(putObject).then();
+    private String contentTypeOf(FilePart file) {
+        MediaType contentType = file.headers().getContentType();
+        return contentType != null ? contentType.toString() : MediaType.APPLICATION_OCTET_STREAM_VALUE;
     }
 
     private ByteBuffer toByteBuffer(DataBuffer dataBuffer) {

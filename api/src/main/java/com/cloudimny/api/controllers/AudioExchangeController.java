@@ -5,6 +5,7 @@ import com.cloudimny.api.models.payload.TrackPayload;
 import com.cloudimny.api.services.StorageService;
 import com.cloudimny.api.services.TrackService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Slf4j
 public class AudioExchangeController {
     private final StorageService storageService;
     private final TrackService trackService;
@@ -25,6 +27,7 @@ public class AudioExchangeController {
     @PostMapping("/upload")
     public Mono<TrackDTO> upload(@RequestPart("file") FilePart file,
                                  @RequestPart("meta") TrackPayload payload) {
+        log.info("Uploading a track: {}", payload);
         return trackService.create(payload)
                 .flatMap(track -> storageService.upload(track.id().toString(), file)
                         .then(trackService.attachStorageKey(track, track.id().toString())))
