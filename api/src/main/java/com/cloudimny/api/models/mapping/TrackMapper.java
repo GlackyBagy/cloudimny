@@ -17,7 +17,7 @@ public interface TrackMapper {
     Track toTrack(TrackPayload payload, UUID id, UUID artistId);
 
     @Mapping(target = "id", source = "track.id")
-    @Mapping(target = "artistDTO", source = "artist")
+    @Mapping(target = "artist", source = "artist")
     @Mapping(target = "uploadedAt", source = "track.timestamp")
     TrackDTO toDTO(Track track, Artist artist);
 }
