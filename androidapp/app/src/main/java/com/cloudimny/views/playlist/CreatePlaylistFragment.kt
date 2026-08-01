@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cloudimny.R
-import com.cloudimny.server.ServerRepository
+import com.cloudimny.server.MetadataService
 import com.cloudimny.views.MainActivity
 import kotlinx.coroutines.launch
 
@@ -33,7 +33,7 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
         tracksList.layoutManager = LinearLayoutManager(requireContext())
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val allTracks = ServerRepository.loadAllTracks(requireContext())
+            val allTracks = MetadataService.loadAllTracks(requireContext())
             val adapter = SelectableTrackAdapter(allTracks)
             tracksAdapter = adapter
             tracksList.adapter = adapter
@@ -46,7 +46,7 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
             val selectedTrackIds = tracksAdapter?.selectedTrackIds?.toList().orEmpty()
             createButton.isEnabled = false
             viewLifecycleOwner.lifecycleScope.launch {
-                ServerRepository.createPlaylist(requireContext(), name, selectedTrackIds)
+                MetadataService.createPlaylist(requireContext(), name, selectedTrackIds)
                 parentFragmentManager.popBackStack()
             }
         }

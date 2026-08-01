@@ -7,9 +7,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cloudimny.R
 import com.cloudimny.player.PlayerViewModel
-import com.cloudimny.server.ServerRepository
+import com.cloudimny.server.MetadataService
 import com.cloudimny.views.home.TrackAdapter
 import kotlinx.coroutines.launch
 
@@ -21,15 +22,25 @@ class AllTracksFragment : Fragment(R.layout.fragment_item_list) {
 
         (requireActivity() as MainActivity).setHeaderTitle(getString(R.string.all_tracks))
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            val allTracks = ServerRepository.loadAllTracks(requireContext())
+        val itemsList: RecyclerView = view.findViewById<RecyclerView>(R.id.items_list).apply {
+            layoutManager = LinearLayoutManager(requireContext())
+        }
+        val swipeRefresh: SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
+        swipeRefresh.setColorSchemeResources(R.color.secondary)
+        swipeRefresh.setOnRefreshListener { loadTracks(itemsList, swipeRefresh, forceRefresh = true) }
 
-            view.findViewById<RecyclerView>(R.id.items_list).apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = TrackAdapter(allTracks) { track ->
-                    playerViewModel.play(allTracks, track)
-                }
+        loadTracks(itemsList, swipeRefresh, forceRefresh = false)
+    }
+
+    private fun loadTracks(itemsList: RecyclerView, swipeRefresh: SwipeRefreshLayout, forceRefresh: Boolean) {
+        swipeRefresh.isRefreshing = true
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            val allTracks = MetadataService.loadAllTracks(requireContext(), forceRefresh)
+            itemsList.adapter = TrackAdapter(allTracks) { track ->
+                playerViewModel.play(allTracks, track)
             }
+            swipeRefresh.isRefreshing = false
         }
     }
 }

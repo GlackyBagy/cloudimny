@@ -24,7 +24,7 @@ class TrackUploadWorker(
         setForeground(createForegroundInfo(title))
 
         return try {
-            ServerRepository.uploadTrack(applicationContext, uri, title, artist)
+            MetadataService.uploadTrack(applicationContext, uri, title, artist)
             Result.success()
         } catch (_: Exception) {
             Result.failure()
