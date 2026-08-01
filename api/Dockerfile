@@ -5,6 +5,7 @@ WORKDIR /workspace
 # cached across builds as long as build.gradle.kts/settings.gradle.kts don't change.
 COPY gradlew gradlew.bat settings.gradle.kts build.gradle.kts ./
 COPY gradle ./gradle
+RUN chmod +x gradlew
 RUN ./gradlew dependencies --no-daemon || true
 
 COPY src ./src
