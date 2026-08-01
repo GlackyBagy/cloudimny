@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cloudimny app</string>
+    <string name="app_name">Cloudimny</string>
     <string name="setup_title">Let\'s setup\nyour server</string>
 
     <string name="setup_address_hint">example.com:22 or 1.1.1.1:22</string>
@@ -50,4 +50,8 @@
     <string name="playlist_name_hint">My playlist</string>
     <string name="playlist_tracks_label">Tracks</string>
     <string name="create_button">Create</string>
+    <string name="search_hint">Search tracks and playlists</string>
+    <string name="search_tracks_header">Tracks</string>
+    <string name="search_playlists_header">Playlists</string>
+    <string name="no_search_results">No results</string>
 </resources>
