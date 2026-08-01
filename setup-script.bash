@@ -14,7 +14,9 @@ sudo usermod -aG docker "$USER"
 # Stage 2. Generate self-signed TLS certificate for PROVIDED_ADDRESS
 
 : "${PROVIDED_ADDRESS:?PROVIDED_ADDRESS environment variable is not set}"
+: "${AUTH_SECRET:?AUTH_SECRET environment variable is not set}"
 export PROVIDED_ADDRESS
+export AUTH_SECRET
 
 CERT_DIR="/etc/ssl/cloudimny"
 CERT_DAYS=$((50 * 365))
@@ -44,7 +46,7 @@ fi
 
 # Stage 3. Download the docker compose stack from the public GitHub repo and start it
 
-REPO_RAW_BASE="https://raw.githubusercontent.com/GlackyBagy/cloudimny/setup-script"
+REPO_RAW_BASE="https://raw.githubusercontent.com/GlackyBagy/cloudimny/main"
 APP_DIR="/opt/cloudimny"
 
 sudo mkdir -p "$APP_DIR"
