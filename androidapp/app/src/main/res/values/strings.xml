@@ -23,6 +23,9 @@
     <string name="certificate_error_message">Unable to retrieve server certificate</string>
     <string name="play_button">play_button</string>
     <string name="track_cover">track_cover</string>
+    <string name="previous_track_button">previous_track_button</string>
+    <string name="next_track_button">next_track_button</string>
+    <string name="close_player_button">close_player_button</string>
     <string name="nav_home">Home</string>
     <string name="nav_search">Search</string>
     <string name="nav_add">Create</string>

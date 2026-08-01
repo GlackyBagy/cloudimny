@@ -21,9 +21,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun openPlayer() {
+        findViewById<View>(R.id.player_container).visibility = View.VISIBLE
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.player_container, PlayerFragment())
+            .addToBackStack("player")
+            .commit()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                findViewById<View>(R.id.player_container).visibility = View.GONE
+            }
+        }
 
         val header = findViewById<TextView>(R.id.header_title)
         ViewCompat.setOnApplyWindowInsetsListener(header) { view, insets ->
