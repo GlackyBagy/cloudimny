@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val setupScriptUrl: String =
-    "https://raw.githubusercontent.com/GlackyBagy/cloudimny/setup-script/setup-script.bash"
+    "https://raw.githubusercontent.com/GlackyBagy/cloudimny/main/setup-script.bash"
 private const val remoteCertificatePath: String = "/etc/ssl/cloudimny/server.crt"
 private const val setupTimeoutMinutes: Long = 10
 private const val keepAliveIntervalSeconds: Int = 30
