@@ -87,6 +87,8 @@ object ServerRepository {
     fun streamingUrl(context: Context, trackId: UUID): String =
         "${RetrofitClient.baseUrl(context)}api/v1/streaming/$trackId"
 
+    fun httpClient(context: Context): OkHttpClient = RetrofitClient.httpClient(context)
+
     suspend fun loadAllPlaylists(context: Context): List<Playlist> =
         RetrofitClient.trackApi(context).getAllPlaylists()
 
@@ -99,6 +101,7 @@ object ServerRepository {
 
 private object RetrofitClient {
     private var trackApi: TrackApi? = null
+    private var cachedHttpClient: OkHttpClient? = null
     private var cachedBaseUrl: String? = null
 
     val gson = GsonBuilder()
@@ -117,12 +120,12 @@ private object RetrofitClient {
         return "https://$host/"
     }
 
-    fun trackApi(context: Context): TrackApi {
+    fun httpClient(context: Context): OkHttpClient {
         val baseUrl = baseUrl(context)
 
-        var api = trackApi
-        if (api == null || cachedBaseUrl != baseUrl) {
-            val client = OkHttpClient.Builder()
+        var client = cachedHttpClient
+        if (client == null || cachedBaseUrl != baseUrl) {
+            client = OkHttpClient.Builder()
                 .addInterceptor { chain ->
                     val secret = ServerCertificateStore.authSecret(context)
                     val request = if (secret != null) {
@@ -140,15 +143,27 @@ private object RetrofitClient {
                 )
                 .build()
 
+            cachedHttpClient = client
+            cachedBaseUrl = baseUrl
+            trackApi = null
+        }
+
+        return client
+    }
+
+    fun trackApi(context: Context): TrackApi {
+        val client = httpClient(context)
+
+        var api = trackApi
+        if (api == null) {
             api = Retrofit.Builder()
-                .baseUrl(baseUrl)
+                .baseUrl(baseUrl(context))
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(TrackApi::class.java)
 
             trackApi = api
-            cachedBaseUrl = baseUrl
         }
 
         return api

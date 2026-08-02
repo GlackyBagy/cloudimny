@@ -4,12 +4,13 @@ import android.content.Intent
 import androidx.annotation.OptIn
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import com.cloudimny.server.ServerRepository
 
 class PlaybackService : MediaSessionService() {
     private lateinit var player: ExoPlayer
@@ -21,7 +22,7 @@ class PlaybackService : MediaSessionService() {
 
         val cacheDataSourceFactory = CacheDataSource.Factory()
             .setCache(TrackCache.get(this))
-            .setUpstreamDataSourceFactory(DefaultHttpDataSource.Factory())
+            .setUpstreamDataSourceFactory(OkHttpDataSource.Factory(ServerRepository.httpClient(this)))
 
         player = ExoPlayer.Builder(this)
             .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
