@@ -5,131 +5,142 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground"
+    android:paddingHorizontal="@dimen/player_padding_horizontal"
     tools:context=".views.PlayerFragment">
 
     <ImageButton
         android:id="@+id/close_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/close_player_button"
-        android:padding="12dp"
+        style="@style/Widget.Cloudimny.IconButton.Filled"
+        android:layout_width="@dimen/icon_button_size"
+        android:layout_height="@dimen/icon_button_size"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/cd_close_player"
+        android:padding="10dp"
         android:rotation="180"
         android:src="@drawable/arrow_forward_icon"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_primary" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Центрируется по родителю: close_button слева раньше уравновешивался
+         38dp-спейсером справа, поэтому спейсер удалён без изменения макета -->
+    <TextView
+        android:id="@+id/now_playing_label"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:letterSpacing="0.06"
+        android:text="@string/now_playing_label"
+        android:textAllCaps="true"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="@dimen/text_caption"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/close_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/close_button" />
 
     <ImageView
         android:id="@+id/track_cover"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="32dp"
-        android:contentDescription="@string/track_cover"
+        android:layout_marginHorizontal="@dimen/space_l"
+        android:background="@drawable/cover_placeholder_large"
+        android:elevation="10dp"
+        android:importantForAccessibility="no"
         android:scaleType="centerCrop"
-        android:src="@drawable/broken_image_icon"
+        app:layout_constraintBottom_toTopOf="@id/track_title"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/close_button"
-        app:layout_constraintBottom_toTopOf="@id/track_title"
         app:layout_constraintVertical_bias="0.5" />
 
     <TextView
         android:id="@+id/track_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="28dp"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="2"
-        android:textColor="@color/text_primary"
-        android:textSize="22sp"
+        android:textColor="?attr/colorOnBackground"
+        android:textSize="@dimen/text_title"
         android:textStyle="bold"
-        tools:text="Track title"
-        app:layout_constraintTop_toBottomOf="@id/track_cover"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/track_cover"
+        tools:text="Track title" />
 
     <TextView
         android:id="@+id/track_artist"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="@dimen/space_xs"
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:textColor="@color/text_secondary"
-        android:textSize="16sp"
-        tools:text="Artist name"
-        app:layout_constraintTop_toBottomOf="@id/track_title"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="@dimen/text_body"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/track_title"
+        tools:text="Artist name" />
 
     <SeekBar
         android:id="@+id/track_seek_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginHorizontal="16dp"
-        android:maxHeight="4dp"
-        android:minHeight="4dp"
-        android:paddingHorizontal="0dp"
+        android:layout_marginTop="28dp"
+        android:maxHeight="@dimen/seek_bar_height"
+        android:minHeight="@dimen/seek_bar_height"
         android:progressDrawable="@drawable/player_seekbar_progress"
         android:splitTrack="false"
         android:thumb="@drawable/player_seekbar_thumb"
-        app:layout_constraintTop_toBottomOf="@id/track_artist"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/track_artist" />
 
-    <LinearLayout
-        android:id="@+id/controls"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/track_seek_bar"
+    <!-- Ряд управления собран горизонтальной привязкой к play_button
+         вместо вложенного LinearLayout -->
+    <ImageButton
+        android:id="@+id/play_button"
+        style="@style/Widget.Cloudimny.IconButton.Outlined"
+        android:layout_width="@dimen/player_button_size_primary"
+        android:layout_height="@dimen/player_button_size_primary"
+        android:layout_marginTop="@dimen/space_xl"
+        android:layout_marginBottom="36dp"
+        android:contentDescription="@string/cd_play_pause"
+        android:padding="18dp"
+        android:src="@drawable/play_arrow_icon"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/track_seek_bar" />
 
-        <ImageButton
-            android:id="@+id/previous_button"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/previous_track_button"
-            android:padding="14dp"
-            android:src="@drawable/skip_previous_icon"
-            app:tint="@color/text_primary" />
+    <ImageButton
+        android:id="@+id/previous_button"
+        style="@style/Widget.Cloudimny.IconButton"
+        android:layout_width="@dimen/player_button_size"
+        android:layout_height="@dimen/player_button_size"
+        android:layout_marginEnd="30dp"
+        android:contentDescription="@string/cd_previous_track"
+        android:padding="@dimen/space_l"
+        android:src="@drawable/skip_previous_icon"
+        app:layout_constraintBottom_toBottomOf="@id/play_button"
+        app:layout_constraintEnd_toStartOf="@id/play_button"
+        app:layout_constraintTop_toTopOf="@id/play_button" />
 
-        <ImageButton
-            android:id="@+id/play_button"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
-            android:layout_marginHorizontal="24dp"
-            android:background="@drawable/circle_button_background"
-            android:contentDescription="@string/play_button"
-            android:padding="18dp"
-            android:src="@drawable/play_arrow_icon"
-            app:tint="@color/text_primary" />
-
-        <ImageButton
-            android:id="@+id/next_button"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/next_track_button"
-            android:padding="14dp"
-            android:src="@drawable/skip_next_icon"
-            app:tint="@color/text_primary" />
-
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/next_button"
+        style="@style/Widget.Cloudimny.IconButton"
+        android:layout_width="@dimen/player_button_size"
+        android:layout_height="@dimen/player_button_size"
+        android:layout_marginStart="30dp"
+        android:contentDescription="@string/cd_next_track"
+        android:padding="@dimen/space_l"
+        android:src="@drawable/skip_next_icon"
+        app:layout_constraintBottom_toBottomOf="@id/play_button"
+        app:layout_constraintStart_toEndOf="@id/play_button"
+        app:layout_constraintTop_toTopOf="@id/play_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

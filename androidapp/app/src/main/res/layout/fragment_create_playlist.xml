@@ -9,41 +9,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="24dp"
-        android:paddingTop="32dp"
-        android:paddingBottom="24dp">
+        android:paddingHorizontal="@dimen/player_padding_horizontal"
+        android:paddingTop="@dimen/space_xxxl"
+        android:paddingBottom="@dimen/space_xxl">
 
+        <!-- labelFor не задаётся: у поля есть hint, и lint (LabelFor)
+             требует что-то одно, иначе TalkBack прочитает подпись дважды -->
         <TextView
+            style="@style/Widget.Cloudimny.Text.FieldLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:labelFor="@id/playlist_name_input"
-            android:text="@string/playlist_name_label"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp" />
+            android:text="@string/playlist_name_label" />
 
         <EditText
             android:id="@+id/playlist_name_input"
+            style="@style/Widget.Cloudimny.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_s"
             android:hint="@string/playlist_name_hint"
             android:importantForAutofill="no"
-            android:inputType="text"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_secondary" />
+            android:inputType="text" />
 
         <TextView
+            style="@style/Widget.Cloudimny.Text.FieldLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/playlist_tracks_label"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp" />
+            android:layout_marginTop="@dimen/space_xxl"
+            android:text="@string/playlist_tracks_label" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/selectable_tracks_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/space_s"
             android:nestedScrollingEnabled="false"
             tools:listitem="@layout/item_track_checkable" />
 
@@ -51,10 +50,9 @@
             android:id="@+id/create_playlist_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/space_xxxl"
             android:enabled="false"
-            android:text="@string/create_button"
-            android:textColor="@color/text_primary" />
+            android:text="@string/create_button" />
 
     </LinearLayout>
 

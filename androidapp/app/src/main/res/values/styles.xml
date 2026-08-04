@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ===== Text ===== -->
+    <style name="Widget.Cloudimny.Text.RowTitle" parent="">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">@dimen/text_row_title</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.RowSubtitle" parent="">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_row_subtitle</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.SectionHeader" parent="">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">@dimen/text_section</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.FieldLabel" parent="">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">@dimen/text_body_large</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.Hint" parent="">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_row_subtitle</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.NavLabel" parent="">
+        <item name="android:textSize">@dimen/text_nav_label</item>
+    </style>
+
+    <!-- ===== Images =====
+         importantForAccessibility задаётся в самих layout'ах: lint-проверка
+         ContentDescription не резолвит атрибуты через стиль -->
+    <style name="Widget.Cloudimny.Cover" parent="">
+        <item name="android:background">@drawable/cover_placeholder</item>
+        <item name="android:scaleType">centerCrop</item>
+    </style>
+
+    <!-- ===== Buttons ===== -->
+    <style name="Widget.Cloudimny.IconButton" parent="">
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="tint">?attr/colorOnBackground</item>
+    </style>
+
+    <style name="Widget.Cloudimny.IconButton.Filled">
+        <item name="android:background">@drawable/circle_icon_button_background</item>
+    </style>
+
+    <style name="Widget.Cloudimny.IconButton.Outlined">
+        <item name="android:background">@drawable/circle_outline_button_background</item>
+        <item name="tint">?attr/colorPrimary</item>
+    </style>
+
+    <!-- ===== Inputs =====
+         importantForAutofill задаётся в самих layout'ах: lint-проверка
+         Autofill не резолвит атрибуты через стиль -->
+    <style name="Widget.Cloudimny.EditText" parent="">
+        <item name="android:background">@drawable/pill_edittext_background</item>
+        <item name="android:paddingHorizontal">14dp</item>
+        <item name="android:paddingVertical">@dimen/space_m</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textColorHint">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Button" parent="Widget.Material3.Button">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="cornerRadius">@dimen/corner_surface</item>
+    </style>
+
+    <!-- ===== Containers ===== -->
+    <style name="Widget.Cloudimny.Row" parent="">
+        <item name="android:background">@drawable/track_row_background</item>
+        <item name="android:paddingHorizontal">@dimen/row_padding_horizontal</item>
+        <item name="android:paddingVertical">@dimen/row_padding_vertical</item>
+    </style>
+</resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_s">8dp</dimen>
+    <dimen name="space_m">12dp</dimen>
+    <dimen name="space_l">16dp</dimen>
+    <dimen name="space_xl">20dp</dimen>
+    <dimen name="space_xxl">24dp</dimen>
+    <dimen name="space_xxxl">32dp</dimen>
+
+    <!-- Screen -->
+    <dimen name="screen_padding_horizontal">20dp</dimen>
+    <dimen name="player_padding_horizontal">24dp</dimen>
+    <dimen name="list_padding_horizontal">12dp</dimen>
+
+    <!-- Rows -->
+    <dimen name="row_padding_horizontal">8dp</dimen>
+    <dimen name="row_padding_vertical">8dp</dimen>
+    <dimen name="row_cover_size">46dp</dimen>
+    <dimen name="row_cover_gap">12dp</dimen>
+    <dimen name="mini_player_cover_size">44dp</dimen>
+
+    <!-- Corners -->
+    <dimen name="corner_row">12dp</dimen>
+    <dimen name="corner_cover">10dp</dimen>
+    <dimen name="corner_cover_large">22dp</dimen>
+    <dimen name="corner_surface">16dp</dimen>
+    <dimen name="corner_nav_bar">20dp</dimen>
+
+    <!-- Controls -->
+    <dimen name="icon_button_size">38dp</dimen>
+    <dimen name="icon_button_size_small">34dp</dimen>
+    <dimen name="player_button_size">56dp</dimen>
+    <dimen name="player_button_size_primary">62dp</dimen>
+    <dimen name="seek_bar_height">4dp</dimen>
+    <dimen name="elevation_raised">8dp</dimen>
+
+    <!-- Type scale -->
+    <dimen name="text_display">32sp</dimen>
+    <dimen name="text_title">22sp</dimen>
+    <dimen name="text_section">18sp</dimen>
+    <dimen name="text_body_large">16sp</dimen>
+    <dimen name="text_row_title">15sp</dimen>
+    <dimen name="text_body">14sp</dimen>
+    <dimen name="text_row_subtitle">13sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_nav_label">11sp</dimen>
+</resources>

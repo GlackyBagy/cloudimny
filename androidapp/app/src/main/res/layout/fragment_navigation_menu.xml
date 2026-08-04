@@ -4,82 +4,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/surface"
-    android:paddingTop="8dp"
-    android:paddingBottom="16dp"
+    android:background="@drawable/nav_bar_background"
+    android:elevation="@dimen/elevation_raised"
+    android:paddingTop="14dp"
+    android:paddingBottom="@dimen/space_xl"
     tools:context=".views.NavigationMenuFragment">
 
     <ImageButton
         android:id="@+id/home_button"
+        style="@style/Widget.Cloudimny.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/nav_home"
+        android:padding="@dimen/space_xs"
         android:src="@drawable/home_icon"
+        app:layout_constraintEnd_toStartOf="@id/search_button"
         app:layout_constraintHorizontal_chainStyle="spread"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/search_button"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_primary" />
+        app:tint="?attr/colorOnBackground" />
 
     <TextView
         android:id="@+id/home_label"
+        style="@style/Widget.Cloudimny.Text.NavLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="3dp"
         android:text="@string/nav_home"
-        android:textColor="@color/text_primary"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="@id/home_button"
+        android:textColor="?attr/colorOnBackground"
         app:layout_constraintEnd_toEndOf="@id/home_button"
+        app:layout_constraintStart_toStartOf="@id/home_button"
         app:layout_constraintTop_toBottomOf="@id/home_button" />
 
     <ImageButton
         android:id="@+id/search_button"
+        style="@style/Widget.Cloudimny.IconButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/nav_search"
+        android:padding="@dimen/space_xs"
         android:src="@drawable/search_icon"
-        app:layout_constraintStart_toEndOf="@id/home_button"
         app:layout_constraintEnd_toStartOf="@id/add_button"
+        app:layout_constraintStart_toEndOf="@id/home_button"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_secondary" />
+        app:tint="?attr/colorOnSurfaceVariant" />
 
     <TextView
         android:id="@+id/search_label"
+        style="@style/Widget.Cloudimny.Text.NavLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="3dp"
         android:text="@string/nav_search"
-        android:textColor="@color/text_secondary"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="@id/search_button"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintEnd_toEndOf="@id/search_button"
+        app:layout_constraintStart_toStartOf="@id/search_button"
         app:layout_constraintTop_toBottomOf="@id/search_button" />
 
     <ImageButton
         android:id="@+id/add_button"
+        style="@style/Widget.Cloudimny.IconButton.Outlined"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/nav_add"
+        android:padding="6dp"
         android:src="@drawable/add_icon"
-        app:layout_constraintStart_toEndOf="@id/search_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_secondary" />
+        app:layout_constraintStart_toEndOf="@id/search_button"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/add_label"
+        style="@style/Widget.Cloudimny.Text.NavLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="3dp"
         android:text="@string/nav_add"
-        android:textColor="@color/text_secondary"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="@id/add_button"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintEnd_toEndOf="@id/add_button"
+        app:layout_constraintStart_toStartOf="@id/add_button"
         app:layout_constraintTop_toBottomOf="@id/add_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
