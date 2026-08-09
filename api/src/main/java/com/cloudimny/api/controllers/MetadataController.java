@@ -3,16 +3,13 @@ package com.cloudimny.api.controllers;
 import com.cloudimny.api.models.dto.ArtistDTO;
 import com.cloudimny.api.models.dto.PlaylistDTO;
 import com.cloudimny.api.models.dto.TrackDTO;
-import com.cloudimny.api.models.entities.Artist;
 import com.cloudimny.api.models.entities.Track;
 import com.cloudimny.api.models.mapping.ArtistMapper;
 import com.cloudimny.api.models.mapping.TrackMapper;
 import com.cloudimny.api.models.payload.ArtistPayload;
 import com.cloudimny.api.models.payload.PlaylistPayload;
 import com.cloudimny.api.models.payload.TrackPayload;
-import com.cloudimny.api.services.ArtistService;
-import com.cloudimny.api.services.PlaylistService;
-import com.cloudimny.api.services.TrackService;
+import com.cloudimny.api.services.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -29,6 +26,18 @@ public class MetadataController {
     private final TrackService trackService;
     private final PlaylistService playlistService;
     private final TrackMapper trackMapper;
+    private final CoverSourceService coverSourceService;
+    private final StorageService storageService;
+
+    @GetMapping("/test")
+    public Mono<Void> test(@RequestParam String track,
+                           @RequestParam String artist) {
+        return coverSourceService.searchRecording(track, artist)
+                .flatMap(response -> Mono.justOrEmpty(coverSourceService.pickRelease(response)))
+                .flatMap(release -> coverSourceService.resolveCover(release)
+                        .flatMap(image -> storageService.downloadCover(
+                                release.id().toString(), image.thumbnails().get("large"))));
+    }
 
     @PostMapping("/artist")
     public Mono<Void> createArtist(@RequestBody ArtistPayload payload) {

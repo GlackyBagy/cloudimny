@@ -7,5 +7,6 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Table("tracks")
-public record Track(@Id UUID id, String title, UUID artistId, String storageKey, Instant timestamp) {
+public record Track(@Id UUID id, String title, UUID artistId,
+                    String storageKey, Instant timestamp, UUID releaseId) {
 }

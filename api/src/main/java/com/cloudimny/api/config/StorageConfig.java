@@ -16,7 +16,8 @@ import java.util.concurrent.CompletionException;
 
 @Configuration
 public class StorageConfig {
-    public static String BUCKET_NAME = "tracks";
+    public static String TRACKS_BUCKET_NAME = "tracks";
+    public static String COVERS_BUCKET_NAME = "covers";
 
     @Bean
     public S3AsyncClient s3Client(@Value("${storage.s3-accessKey}") String access,
@@ -33,13 +34,14 @@ public class StorageConfig {
                 )
                 .build();
 
-        createBucket(client);
+        createBucket(client, TRACKS_BUCKET_NAME);
+        createBucket(client, COVERS_BUCKET_NAME);
         return client;
     }
 
-    private void createBucket(S3AsyncClient client) {
+    private void createBucket(S3AsyncClient client, String bucketName) {
         var bucket = CreateBucketRequest.builder()
-                .bucket(BUCKET_NAME)
+                .bucket(bucketName)
                 .build();
 
         client.createBucket(bucket).exceptionally(throwable -> {
