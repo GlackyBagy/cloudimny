@@ -6,6 +6,7 @@ import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -36,4 +37,12 @@ public interface ReleaseRepository extends R2dbcRepository<Release, UUID> {
             """)
     Mono<Void> setResolved(@Param("id") UUID id,
                            @Param("resolved") boolean resolved);
+
+    @Query("""
+                 SELECT *
+                 FROM releases r
+                 WHERE r.cover_resolved IS NULL AND
+                       (NOW() AT TIME ZONE 'UTC') - r.timestamp > INTERVAL '10 minutes'
+            """)
+    Flux<Release> findAllUnresolved();
 }

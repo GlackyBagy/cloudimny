@@ -38,6 +38,10 @@ public class TrackService {
         return repository.findAll();
     }
 
+    public Mono<Track> findFirstByReleaseId(UUID releaseId) {
+        return repository.findFirstByReleaseId(releaseId);
+    }
+
     public Mono<Track> update(UUID id, TrackPayload payload) {
         return repository.findById(id)
                 .flatMap(existing -> artistService.createFromNickname(payload.artist().nickname())

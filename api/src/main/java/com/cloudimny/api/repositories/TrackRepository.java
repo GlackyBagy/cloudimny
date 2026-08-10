@@ -20,4 +20,6 @@ public interface TrackRepository extends R2dbcRepository<Track, UUID> {
     @Modifying
     @Query("UPDATE tracks SET release_id = :releaseId WHERE id = :trackId")
     Mono<Long> attachRelease(@Param("trackId") UUID trackId, @Param("releaseId") UUID releaseId);
+
+    Mono<Track> findFirstByReleaseId(UUID releaseId);
 }

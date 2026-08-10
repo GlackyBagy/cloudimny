@@ -5,6 +5,7 @@ import com.cloudimny.api.models.entities.Release;
 import com.cloudimny.api.repositories.ReleaseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.DateTimeException;
@@ -34,6 +35,10 @@ public class ReleaseService {
 
     public Mono<Release> findById(UUID id) {
         return repository.findById(id);
+    }
+
+    public Flux<Release> findUnresolved() {
+        return repository.findAllUnresolved();
     }
 
     /**

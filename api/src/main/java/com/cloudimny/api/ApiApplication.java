@@ -9,6 +9,7 @@ import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
@@ -16,6 +17,7 @@ import java.time.Duration;
 
 @SpringBootApplication
 @EnableR2dbcRepositories
+@EnableScheduling
 public class ApiApplication {
 
     static void main(String[] args) {
