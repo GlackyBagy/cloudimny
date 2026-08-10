@@ -3,6 +3,7 @@ package com.cloudimny.views
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.view.ViewCompat
@@ -14,6 +15,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.cloudimny.R
+import com.cloudimny.covers.CoverLoader
 import com.cloudimny.player.PlaybackQueue
 import com.cloudimny.player.PlayerViewModel
 import kotlinx.coroutines.flow.combine
@@ -31,6 +33,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
             insets
         }
 
+        val trackCover: ImageView = view.findViewById(R.id.track_cover)
         val trackTitle: TextView = view.findViewById(R.id.track_title)
         val trackArtist: TextView = view.findViewById(R.id.track_artist)
         val playButton: ImageButton = view.findViewById(R.id.play_button)
@@ -75,6 +78,7 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
                     playerViewModel.currentTrack.collect { track ->
                         trackTitle.text = track?.title
                         trackArtist.text = track?.artist?.nickname
+                        CoverLoader.load(trackCover, track?.id)
                     }
                 }
 

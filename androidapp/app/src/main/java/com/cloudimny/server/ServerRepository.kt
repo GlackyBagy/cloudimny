@@ -87,6 +87,9 @@ object ServerRepository {
     fun streamingUrl(context: Context, trackId: UUID): String =
         "${RetrofitClient.baseUrl(context)}api/v1/streaming/$trackId"
 
+    fun coverUrl(context: Context, trackId: UUID): String =
+        "${RetrofitClient.baseUrl(context)}api/v1/cover?trackId=$trackId"
+
     fun httpClient(context: Context): OkHttpClient = RetrofitClient.httpClient(context)
 
     suspend fun loadAllPlaylists(context: Context): List<Playlist> =

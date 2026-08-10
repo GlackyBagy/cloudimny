@@ -2,6 +2,7 @@ package com.cloudimny.player
 
 import android.app.Application
 import android.content.ComponentName
+import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
@@ -131,6 +132,9 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         val metadata = MediaMetadata.Builder()
             .setTitle(title)
             .setArtist(artist?.nickname)
+            // обложка уведомления и экрана блокировки грузится самим media3, мимо CoverRepository:
+            // до бинда во View дело не доходит, а 404 без обложки он трактует как её отсутствие
+            .setArtworkUri(ServerRepository.coverUrl(getApplication(), trackId).toUri())
             .build()
 
         return MediaItem.Builder()

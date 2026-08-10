@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/track_cover"
         style="@style/Widget.Cloudimny.Cover"
         android:layout_width="@dimen/row_cover_size"

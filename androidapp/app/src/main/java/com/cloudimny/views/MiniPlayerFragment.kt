@@ -3,6 +3,7 @@ package com.cloudimny.views
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -10,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.cloudimny.R
+import com.cloudimny.covers.CoverLoader
 import com.cloudimny.player.PlayerViewModel
 import kotlinx.coroutines.launch
 
@@ -19,6 +21,7 @@ class MiniPlayerFragment : Fragment(R.layout.fragment_mini_player) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val trackCover: ImageView = view.findViewById(R.id.track_cover)
         val trackTitle: TextView = view.findViewById(R.id.track_title)
         val trackArtist: TextView = view.findViewById(R.id.track_artist)
         val playButton: ImageButton = view.findViewById(R.id.play_button)
@@ -40,6 +43,7 @@ class MiniPlayerFragment : Fragment(R.layout.fragment_mini_player) {
                         view.visibility = if (track == null) View.GONE else View.VISIBLE
                         trackTitle.text = track?.title
                         trackArtist.text = track?.artist?.nickname
+                        CoverLoader.load(trackCover, track?.id)
                     }
                 }
 

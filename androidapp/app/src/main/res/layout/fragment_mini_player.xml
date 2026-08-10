@@ -13,7 +13,7 @@
     android:paddingVertical="@dimen/space_s"
     tools:context=".views.MiniPlayerFragment">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/track_cover"
         style="@style/Widget.Cloudimny.Cover"
         android:layout_width="@dimen/mini_player_cover_size"
