@@ -10,6 +10,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import androidx.core.content.edit
 import com.cloudimny.AppPreferences
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 private const val SERVER_PREFERENCES_NAME = "server_data"
 private const val FINGERPRINT_KEY = "certificate_sha256_fingerprint"
@@ -20,9 +21,24 @@ object ServerCertificateStore {
     fun save(context: Context, fingerprint: String, host: String, authSecret: String) {
         AppPreferences.preferences(context, SERVER_PREFERENCES_NAME).edit {
             putString(FINGERPRINT_KEY, normalize(fingerprint))
-            putString(HOST_KEY, host)
+            putString(HOST_KEY, normalizeHost(host))
             putString(AUTH_SECRET_KEY, authSecret)
         }
+    }
+
+    fun saveHost(context: Context, host: String) {
+        AppPreferences.preferences(context, SERVER_PREFERENCES_NAME).edit {
+            putString(HOST_KEY, normalizeHost(host))
+        }
+    }
+
+    fun isValidHost(host: String): Boolean =
+        host.isNotBlank() && "https://${normalizeHost(host)}/".toHttpUrlOrNull() != null
+
+    fun normalizeHost(host: String): String {
+        val trimmed = host.trim()
+        if (trimmed.startsWith("[")) return trimmed
+        return if (trimmed.count { it == ':' } > 1) "[$trimmed]" else trimmed
     }
 
     fun fingerprint(context: Context): String? =

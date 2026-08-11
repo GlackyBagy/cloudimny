@@ -45,6 +45,25 @@
     <!-- Player -->
     <string name="now_playing_label">Now Playing</string>
 
+    <!-- Settings -->
+    <string name="nav_settings">Settings</string>
+
+    <string name="settings_address_section">Server address</string>
+    <string name="settings_address_label">Address</string>
+    <string name="settings_address_hint">example.com, 1.1.1.1 or [2001:db8::1]</string>
+    <string name="settings_address_warning">Use this only when the same server moved to a new address. The pinned certificate stays as it is, so the connection breaks unless that certificate also covers the new address — recovering from that needs a full setup again.</string>
+    <string name="settings_address_apply">Change address</string>
+    <string name="settings_address_invalid">Address cannot be parsed</string>
+    <string name="settings_address_changed">Server address changed</string>
+    <string name="settings_address_confirm_title">Change server address?</string>
+    <string name="settings_address_confirm_message">The app will talk to %1$s from now on. If the pinned certificate was not issued for this address, every request will fail.</string>
+    <string name="settings_address_confirm_action">Change</string>
+
+    <string name="settings_export_section">Export</string>
+    <string name="settings_export_description">Sends the address, certificate fingerprint and access token as JSON — enough to connect another client to this server. The token grants full access: treat the export like a password.</string>
+    <string name="settings_export_button">Export server</string>
+    <string name="settings_export_unavailable">Server is not configured yet</string>
+
     <!-- Upload -->
     <string name="upload_track_title">Upload track</string>
     <string name="uploading_track_title">Uploading %1$s</string>
