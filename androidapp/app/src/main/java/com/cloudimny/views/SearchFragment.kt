@@ -14,6 +14,7 @@ import com.cloudimny.models.meta.Playlist
 import com.cloudimny.models.meta.Track
 import com.cloudimny.player.PlayerViewModel
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.home.PlaylistAdapter
 import com.cloudimny.views.home.TrackAdapter
 import com.cloudimny.views.playlist.PlaylistDetailFragment
@@ -52,9 +53,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            allTracks = MetadataService.loadAllTracks(requireContext())
-            allPlaylists = MetadataService.loadAllPlaylists(requireContext())
-            applyFilter(searchInput.text.toString())
+            runCatchingServerErrors {
+                allTracks = MetadataService.loadAllTracks(requireContext())
+                allPlaylists = MetadataService.loadAllPlaylists(requireContext())
+                applyFilter(searchInput.text.toString())
+            }
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cloudimny.R
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.MainActivity
 import kotlinx.coroutines.launch
 
@@ -33,10 +34,12 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
         tracksList.layoutManager = LinearLayoutManager(requireContext())
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val allTracks = MetadataService.loadAllTracks(requireContext())
-            val adapter = SelectableTrackAdapter(allTracks)
-            tracksAdapter = adapter
-            tracksList.adapter = adapter
+            runCatchingServerErrors {
+                val allTracks = MetadataService.loadAllTracks(requireContext())
+                val adapter = SelectableTrackAdapter(allTracks)
+                tracksAdapter = adapter
+                tracksList.adapter = adapter
+            }
         }
 
         createButton.setOnClickListener {
@@ -46,8 +49,16 @@ class CreatePlaylistFragment : Fragment(R.layout.fragment_create_playlist) {
             val selectedTrackIds = tracksAdapter?.selectedTrackIds?.toList().orEmpty()
             createButton.isEnabled = false
             viewLifecycleOwner.lifecycleScope.launch {
-                MetadataService.createPlaylist(requireContext(), name, selectedTrackIds)
-                parentFragmentManager.popBackStack()
+                var created = false
+                runCatchingServerErrors {
+                    MetadataService.createPlaylist(requireContext(), name, selectedTrackIds)
+                    created = true
+                }
+                if (created) {
+                    parentFragmentManager.popBackStack()
+                } else {
+                    createButton.isEnabled = true
+                }
             }
         }
     }

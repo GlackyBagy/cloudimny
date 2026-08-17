@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cloudimny.R
 import com.cloudimny.player.PlayerViewModel
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.MainActivity
 import com.cloudimny.views.home.TrackAdapter
 import kotlinx.coroutines.launch
@@ -43,11 +44,13 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_item_list) {
         swipeRefresh.isRefreshing = true
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val playlist = MetadataService.loadPlaylist(requireContext(), playlistId, forceRefresh)
-            (requireActivity() as MainActivity).setHeaderTitle(playlist.name.orEmpty())
+            runCatchingServerErrors {
+                val playlist = MetadataService.loadPlaylist(requireContext(), playlistId, forceRefresh)
+                (requireActivity() as MainActivity).setHeaderTitle(playlist.name.orEmpty())
 
-            itemsList.adapter = TrackAdapter(playlist.songList) { track ->
-                playerViewModel.play(playlist.songList, track)
+                itemsList.adapter = TrackAdapter(playlist.songList) { track ->
+                    playerViewModel.play(playlist.songList, track)
+                }
             }
             swipeRefresh.isRefreshing = false
         }

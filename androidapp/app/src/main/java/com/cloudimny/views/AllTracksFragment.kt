@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cloudimny.R
 import com.cloudimny.player.PlayerViewModel
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.home.TrackAdapter
 import kotlinx.coroutines.launch
 
@@ -36,9 +37,11 @@ class AllTracksFragment : Fragment(R.layout.fragment_item_list) {
         swipeRefresh.isRefreshing = true
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val allTracks = MetadataService.loadAllTracks(requireContext(), forceRefresh)
-            itemsList.adapter = TrackAdapter(allTracks) { track ->
-                playerViewModel.play(allTracks, track)
+            runCatchingServerErrors {
+                val allTracks = MetadataService.loadAllTracks(requireContext(), forceRefresh)
+                itemsList.adapter = TrackAdapter(allTracks) { track ->
+                    playerViewModel.play(allTracks, track)
+                }
             }
             swipeRefresh.isRefreshing = false
         }
