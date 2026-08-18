@@ -16,6 +16,7 @@ private const val SERVER_PREFERENCES_NAME = "server_data"
 private const val FINGERPRINT_KEY = "certificate_sha256_fingerprint"
 private const val HOST_KEY = "server_host"
 private const val AUTH_SECRET_KEY = "auth_secret"
+private const val SHA256_HEX_LENGTH = 64
 
 object ServerCertificateStore {
     fun save(context: Context, fingerprint: String, host: String, authSecret: String) {
@@ -34,6 +35,13 @@ object ServerCertificateStore {
 
     fun isValidHost(host: String): Boolean =
         host.isNotBlank() && "https://${normalizeHost(host)}/".toHttpUrlOrNull() != null
+
+    /** Accepts the digest in either form the tooling produces — colon-separated or bare hex. */
+    fun isValidFingerprint(fingerprint: String): Boolean {
+        val normalized = normalize(fingerprint)
+        return normalized.length == SHA256_HEX_LENGTH &&
+                normalized.all { it in '0'..'9' || it in 'A'..'F' }
+    }
 
     fun normalizeHost(host: String): String {
         val trimmed = host.trim()

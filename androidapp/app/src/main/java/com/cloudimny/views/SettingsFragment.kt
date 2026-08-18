@@ -9,9 +9,10 @@ import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import com.cloudimny.R
+import com.cloudimny.server.ServerExport
+import com.cloudimny.server.buildServerExport
 import com.cloudimny.server.security.ServerCertificateStore
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import org.json.JSONObject
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
@@ -69,11 +70,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             return
         }
 
-        val payload = JSONObject()
-            .put("host", host)
-            .put("fingerprint", fingerprint)
-            .put("authSecret", authSecret)
-            .toString(2)
+        val payload = buildServerExport(ServerExport(host, fingerprint, authSecret))
 
         val share = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"

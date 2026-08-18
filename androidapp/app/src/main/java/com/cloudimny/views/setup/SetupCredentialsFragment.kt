@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.cloudimny.AppPreferences
@@ -26,6 +27,14 @@ class SetupCredentialsFragment : Fragment(R.layout.fragment_setup_credentials) {
     private lateinit var usernameInput: EditText
     private lateinit var passwordInput: EditText
     private lateinit var setupConfirmButton: Button
+    private lateinit var setupImportButton: Button
+
+    // без фильтра по типу: экспорт уходит через ACTION_SEND, и каким расширением его
+    // сохранит принимающее приложение — не наше дело; содержимое всё равно проверяется
+    private val pickServerFile =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) viewModel.importServer(uri)
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,6 +43,11 @@ class SetupCredentialsFragment : Fragment(R.layout.fragment_setup_credentials) {
         usernameInput = view.findViewById(R.id.setup_username_input)
         passwordInput = view.findViewById(R.id.setup_password_input)
         setupConfirmButton = view.findViewById(R.id.setup_confirm_button)
+        setupImportButton = view.findViewById(R.id.setup_import_button)
+
+        setupImportButton.setOnClickListener {
+            pickServerFile.launch(arrayOf("*/*"))
+        }
 
         viewModel.errorMessageResId.observe(viewLifecycleOwner) { messageResId ->
             if (messageResId != null) {

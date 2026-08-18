@@ -93,6 +93,16 @@
         <item name="cornerRadius">@dimen/corner_surface</item>
     </style>
 
+    <!-- Обводка красится в primary, а не в colorOutline: палитра задана вручную,
+         M3-производные цвета из неё не выводятся. Текст остаётся тёмным —
+         primary на фоне background в буквах не читается -->
+    <style name="Widget.Cloudimny.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="cornerRadius">@dimen/corner_surface</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="strokeWidth">1.5dp</item>
+    </style>
+
     <!-- ===== Containers ===== -->
     <style name="Widget.Cloudimny.Row" parent="">
         <item name="android:background">@drawable/track_row_background</item>
