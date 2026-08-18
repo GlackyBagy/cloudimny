@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.cloudimny.R
+import com.cloudimny.models.SshAuthMethod
 import com.cloudimny.models.SshConnectionCredentials
 import com.cloudimny.server.parseServerExport
 import com.cloudimny.server.security.ServerCertificateStore
@@ -17,6 +18,7 @@ import kotlinx.coroutines.withTimeout
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier
 import net.schmizz.sshj.userauth.UserAuthException
+import net.schmizz.sshj.userauth.password.PasswordFinder
 import java.io.IOException
 import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
@@ -153,7 +155,18 @@ class SetupViewModel(application: Application) : AndroidViewModel(application) {
     private fun connect(credentials: SshConnectionCredentials, client: SSHClient) {
         client.addHostKeyVerifier(PromiscuousVerifier()) // Trust-on-first-use
         client.connect(credentials.host, credentials.port)
-        client.authPassword(credentials.username, credentials.password)
+
+        when (credentials.authMethod) {
+            SshAuthMethod.PASSWORD ->
+                client.authPassword(credentials.username, credentials.password)
+
+            SshAuthMethod.KEY ->
+                client.authPublickey(
+                    credentials.username,
+                    // явные типы у null: у loadKeys есть и другие трёхаргументные перегрузки
+                    client.loadKeys(credentials.privateKey, null as String?, null as PasswordFinder?)
+                )
+        }
     }
 
     private fun shellQuote(value: String): String =

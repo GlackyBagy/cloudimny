@@ -10,6 +10,15 @@
     <string name="setup_username_hint">root</string>
     <string name="setup_password_label">Password</string>
     <string name="setup_button">Setup</string>
+
+    <string name="setup_auth_label">Authentication</string>
+    <string name="setup_auth_password">Password</string>
+    <string name="setup_auth_key">SSH key</string>
+    <string name="setup_key_label">Private key</string>
+    <string name="setup_key_input_hint">-----BEGIN OPENSSH PRIVATE KEY-----</string>
+    <string name="setup_key_description">Paste the whole private key file, from the -----BEGIN line to the -----END line. A path to the key, or the public half of the pair, will not work.</string>
+    <string name="setup_sudo_password_label">Sudo password</string>
+    <string name="setup_sudo_password_description">Used only for sudo on the server, not to log in. Leave it empty if sudo there does not ask for a password.</string>
     <string name="setting_server_up">Setting up\nyour server</string>
     <string name="it_might_take_a_few_minutes">It might take a few minutes</string>
 
@@ -22,6 +31,8 @@
     <string name="invalid_address_message">Invalid address provided</string>
     <string name="invalid_username_message">Invalid username provided</string>
     <string name="invalid_password_message">Invalid password provided</string>
+    <string name="invalid_key_message">Paste the private key file whole, from the -----BEGIN line to the -----END line</string>
+    <string name="invalid_key_is_public_message">That is the public key. Paste the private one — the file without the .pub extension</string>
     <string name="invalid_credentials_message">Invalid credentials, connection refused</string>
     <string name="cannot_connect_message">Unable connect to the server</string>
     <string name="setup_failed_message">Unable to configure server</string>
