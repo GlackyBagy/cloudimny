@@ -35,6 +35,7 @@
     <string name="invalid_key_is_public_message">That is the public key. Paste the private one — the file without the .pub extension</string>
     <string name="invalid_credentials_message">Invalid credentials, connection refused</string>
     <string name="cannot_connect_message">Unable connect to the server</string>
+    <string name="unknown_error_message">Something went wrong</string>
     <string name="setup_failed_message">Unable to configure server</string>
     <string name="setup_timeout_message">Server setup took too long</string>
     <string name="certificate_error_message">Unable to retrieve server certificate</string>
@@ -44,7 +45,22 @@
     <!-- Navigation -->
     <string name="nav_home">Home</string>
     <string name="nav_search">Search</string>
+    <string name="nav_mirror">Mirror</string>
     <string name="nav_add">Create</string>
+
+    <!-- Mirror -->
+    <string name="mirror_access_title">Mirror another player</string>
+    <string name="mirror_access_message">Cloudimny needs notification access to see what Spotify, YouTube Music or any other player is playing, and plays your own copy instead. Nothing from your notifications is read or stored.\n\nThe other app keeps its own notification — the controls are duplicated, not replaced.</string>
+    <string name="mirror_access_grant">Open settings</string>
+    <string name="mirror_battery_title">Keep running in the background</string>
+    <string name="mirror_battery_message">Mirroring stops if the system suspends the app. Allow it to keep running in the background?</string>
+    <string name="mirror_started">Mirroring on — start playing in another app. Long-press to stop.</string>
+    <string name="mirror_stopped">Mirroring off</string>
+    <string name="mirror_waiting">Waiting for another player…</string>
+    <string name="mirror_notification_waiting">Waiting for another player</string>
+    <string name="mirror_notification_substituted">Playing your copy</string>
+    <string name="mirror_notification_passthrough">Not in your library — original playing</string>
+    <string name="mirror_notification_stop">Stop</string>
     <string name="menu_upload_track">Upload track</string>
     <string name="menu_create_playlist">Create playlist</string>
 

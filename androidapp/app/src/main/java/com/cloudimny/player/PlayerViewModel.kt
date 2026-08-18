@@ -2,18 +2,18 @@ package com.cloudimny.player
 
 import android.app.Application
 import android.content.ComponentName
-import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
-import androidx.media3.common.MediaMetadata
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import com.cloudimny.mirror.MirrorController
+import com.cloudimny.mirror.MirrorState
+import com.cloudimny.mirror.SourceCommand
 import com.cloudimny.models.meta.Track
-import com.cloudimny.server.ServerRepository
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import kotlinx.coroutines.delay
@@ -72,9 +72,18 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
             updateCurrentTrackFromController()
 
             while (true) {
-                _position.value = mediaController.currentPosition.coerceAtLeast(0)
-                val duration = mediaController.duration
-                _duration.value = if (duration == C.TIME_UNSET || duration < 0) 0L else duration
+                // в passthrough наш плеер стоит на паузе, и его нули на экране относились бы
+                // к тишине, тогда как пользователь слышит источник
+                val mirror = MirrorController.state.value
+                if (mirror is MirrorState.Passthrough) {
+                    _position.value = MirrorController.sourcePositionMs()
+                    _duration.value = MirrorController.sourceDurationMs()
+                    _isPlaying.value = mirror.source.isPlaying
+                } else {
+                    _position.value = mediaController.currentPosition.coerceAtLeast(0)
+                    val duration = mediaController.duration
+                    _duration.value = if (duration == C.TIME_UNSET || duration < 0) 0L else duration
+                }
                 delay(500.milliseconds)
             }
         }
@@ -96,22 +105,45 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
         val ctl = controller ?: return
         PlaybackQueue.set(playable, startIndex)
-        ctl.setMediaItems(playable.map { it.toMediaItem() }, startIndex, 0L)
+        ctl.setMediaItems(playable.map { it.toMediaItem(getApplication()) }, startIndex, 0L)
         ctl.prepare()
         ctl.play()
     }
 
+    /**
+     * While mirroring, the queue lives in the other app: our own has a single track in it, so
+     * skipping is nothing but the command passed on, and moving a local queue would be wrong.
+     */
     fun playNext() {
+        if (MirrorController.isActive) {
+            MirrorController.forward(SourceCommand.NEXT)
+            return
+        }
+
         val ctl = controller ?: return
         if (ctl.hasNextMediaItem()) ctl.seekToNext()
     }
 
     fun playPrevious() {
+        if (MirrorController.isActive) {
+            MirrorController.forward(SourceCommand.PREVIOUS)
+            return
+        }
+
         val ctl = controller ?: return
         if (ctl.hasPreviousMediaItem()) ctl.seekToPrevious()
     }
 
     fun togglePlayPause() {
+        // в passthrough звучит источник, и пауза должна дойти до него, а не до нашего молчащего плеера
+        val mirror = MirrorController.state.value
+        if (mirror is MirrorState.Passthrough) {
+            val command =
+                if (mirror.source.isPlaying) SourceCommand.PAUSE else SourceCommand.PLAY
+            MirrorController.forward(command)
+            return
+        }
+
         val ctl = controller ?: return
         if (ctl.playbackState == Player.STATE_IDLE) return
         if (ctl.playbackState == Player.STATE_ENDED) {
@@ -123,25 +155,14 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
     }
 
     fun seekTo(positionMs: Long) {
+        if (MirrorController.state.value is MirrorState.Passthrough) {
+            MirrorController.seekSource(positionMs)
+            _position.value = positionMs
+            return
+        }
+
         controller?.seekTo(positionMs)
         _position.value = positionMs
-    }
-
-    private fun Track.toMediaItem(): MediaItem {
-        val trackId = checkNotNull(id)
-        val metadata = MediaMetadata.Builder()
-            .setTitle(title)
-            .setArtist(artist?.nickname)
-            // обложка уведомления и экрана блокировки грузится самим media3, мимо CoverRepository:
-            // до бинда во View дело не доходит, а 404 без обложки он трактует как её отсутствие
-            .setArtworkUri(ServerRepository.coverUrl(getApplication(), trackId).toUri())
-            .build()
-
-        return MediaItem.Builder()
-            .setMediaId(trackId.toString())
-            .setUri(ServerRepository.streamingUrl(getApplication(), trackId))
-            .setMediaMetadata(metadata)
-            .build()
     }
 
     private suspend fun <T> ListenableFuture<T>.await(): T = suspendCancellableCoroutine { cont ->

@@ -1,11 +1,14 @@
 package com.cloudimny.views
 
+import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
@@ -16,13 +19,46 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.cloudimny.R
 import com.cloudimny.covers.CoverLoader
+import com.cloudimny.mirror.MirrorController
+import com.cloudimny.mirror.MirrorState
 import com.cloudimny.player.PlaybackQueue
 import com.cloudimny.player.PlayerViewModel
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class PlayerFragment : Fragment(R.layout.fragment_player) {
     private val playerViewModel: PlayerViewModel by activityViewModels()
+
+    /**
+     * Artwork from the source wins, with our own as the fallback. The pending cover request is
+     * cancelled first: setting a bitmap by hand does not stop one already in flight, and it would
+     * land afterwards on top of what the source gave us.
+     */
+    /**
+     * Marks whose recording is playing. The thumb goes with the bar: left on the accent while the
+     * bar changed, it would read as a rendering fault rather than a state.
+     */
+    private fun tintSeekBar(seekBar: SeekBar, substituted: Boolean) {
+        val tint = ColorStateList.valueOf(
+            ContextCompat.getColor(
+                requireContext(),
+                if (substituted) R.color.secondary else R.color.primary
+            )
+        )
+        seekBar.progressTintList = tint
+        seekBar.thumbTintList = tint
+    }
+
+    private fun showArtwork(target: ImageView, artwork: Bitmap?, fallbackTrackId: UUID?) {
+        if (artwork == null) {
+            CoverLoader.load(target, fallbackTrackId)
+            return
+        }
+
+        CoverLoader.load(target, null)
+        target.setImageBitmap(artwork)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -82,6 +118,31 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
                     }
                 }
 
+                // обложка источника перекрывает нашу: в режиме зеркала на экране должно быть то же,
+                // что пользователь видит в уведомлении подменяемого приложения
+                launch {
+                    MirrorController.state.collect { state ->
+                        when (state) {
+                            is MirrorState.Substituted -> {
+                                showArtwork(trackCover, state.source.artwork, state.track.id)
+                                trackTitle.text = state.track.title
+                                trackArtist.text = state.track.artist?.nickname
+                                tintSeekBar(seekBar, substituted = true)
+                            }
+
+                            is MirrorState.Passthrough -> {
+                                showArtwork(trackCover, state.source.artwork, null)
+                                trackTitle.text = state.source.title
+                                trackArtist.text = state.source.artist
+                                tintSeekBar(seekBar, substituted = false)
+                            }
+
+                            MirrorState.Waiting, MirrorState.Off ->
+                                tintSeekBar(seekBar, substituted = false)
+                        }
+                    }
+                }
+
                 launch {
                     playerViewModel.isPlaying.collect { isPlaying ->
                         playButton.setImageResource(
@@ -105,8 +166,15 @@ class PlayerFragment : Fragment(R.layout.fragment_player) {
                 }
 
                 launch {
-                    combine(PlaybackQueue.tracks, PlaybackQueue.currentIndex) { _, _ ->
-                        PlaybackQueue.hasPrevious() to PlaybackQueue.hasNext()
+                    combine(
+                        PlaybackQueue.tracks,
+                        PlaybackQueue.currentIndex,
+                        MirrorController.state
+                    ) { _, _, mirror ->
+                        // очередь зеркала — чужая, её границы нам не видны, так что обе
+                        // кнопки активны всегда: ответит на них источник
+                        if (mirror != MirrorState.Off) true to true
+                        else PlaybackQueue.hasPrevious() to PlaybackQueue.hasNext()
                     }.collect { (hasPrevious, hasNext) ->
                         previousButton.isEnabled = hasPrevious
                         previousButton.alpha = if (hasPrevious) 1f else 0.3f
