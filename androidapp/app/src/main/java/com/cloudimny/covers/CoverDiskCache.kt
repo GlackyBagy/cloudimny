@@ -1,6 +1,7 @@
 package com.cloudimny.covers
 
 import android.content.Context
+import com.cloudimny.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -10,8 +11,13 @@ import java.io.IOException
 import java.util.UUID
 
 private const val CACHE_DIR_NAME = "cover_cache"
-private const val CACHE_MAX_BYTES = 32L * 1024 * 1024
-private const val CACHE_TRIM_TARGET_BYTES = CACHE_MAX_BYTES * 4 / 5
+private const val BYTES_IN_MEGABYTE = 1024L * 1024L
+
+/**
+ * Trimming down to the limit exactly would make the next write trim again; stopping below it buys
+ * room for a run of writes between passes.
+ */
+private const val TRIM_TARGET_PERCENT = 80
 
 /**
  * Encoded covers on disk, one file per track, evicted least-recently-used — the image counterpart
@@ -51,21 +57,33 @@ internal object CoverDiskCache {
                 return@withContext
             }
 
-            trim(dir)
+            trim(dir, maxBytes(context))
         }
     }
 
-    private suspend fun trim(dir: File) = trimLock.withLock {
+    /**
+     * Brings the cache under the limit now rather than at the next write, so lowering it in
+     * settings frees the space there and then instead of whenever the next cover happens to arrive.
+     */
+    suspend fun trimToLimit(context: Context) = withContext(Dispatchers.IO) {
+        trim(cacheDir(context), maxBytes(context))
+    }
+
+    private suspend fun trim(dir: File, maxBytes: Long) = trimLock.withLock {
         val files = dir.listFiles()?.sortedBy(File::lastModified) ?: return@withLock
         var total = files.sumOf(File::length)
-        if (total <= CACHE_MAX_BYTES) return@withLock
+        if (total <= maxBytes) return@withLock
 
+        val target = maxBytes * TRIM_TARGET_PERCENT / 100
         for (file in files) {
-            if (total <= CACHE_TRIM_TARGET_BYTES) break
+            if (total <= target) break
             val length = file.length()
             if (file.delete()) total -= length
         }
     }
+
+    private fun maxBytes(context: Context): Long =
+        AppPreferences.getCoverCacheMb(context) * BYTES_IN_MEGABYTE
 
     private fun cacheDir(context: Context): File =
         File(context.cacheDir, CACHE_DIR_NAME).apply { mkdirs() }

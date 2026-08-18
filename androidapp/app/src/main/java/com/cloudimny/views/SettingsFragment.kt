@@ -5,14 +5,20 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.cloudimny.AppPreferences
 import com.cloudimny.R
+import com.cloudimny.covers.CoverDiskCache
 import com.cloudimny.server.ServerExport
 import com.cloudimny.server.buildServerExport
 import com.cloudimny.server.security.ServerCertificateStore
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.slider.Slider
+import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment(R.layout.fragment_settings) {
 
@@ -44,7 +50,70 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             confirmAddressChange(ServerCertificateStore.normalizeHost(entered))
         }
 
+        setUpCacheSlider(
+            slider = view.findViewById(R.id.track_cache_slider),
+            valueLabel = view.findViewById(R.id.track_cache_value),
+            minMb = AppPreferences.MIN_TRACK_CACHE_MB,
+            maxMb = AppPreferences.MAX_TRACK_CACHE_MB,
+            stepMb = AppPreferences.TRACK_CACHE_STEP_MB,
+            storedMb = AppPreferences.getTrackCacheMb(requireContext()),
+            onChanged = { AppPreferences.setTrackCacheMb(requireContext(), it) }
+        )
+
+        val coverSlider: Slider = view.findViewById(R.id.cover_cache_slider)
+        setUpCacheSlider(
+            slider = coverSlider,
+            valueLabel = view.findViewById(R.id.cover_cache_value),
+            minMb = AppPreferences.MIN_COVER_CACHE_MB,
+            maxMb = AppPreferences.MAX_COVER_CACHE_MB,
+            stepMb = AppPreferences.COVER_CACHE_STEP_MB,
+            storedMb = AppPreferences.getCoverCacheMb(requireContext()),
+            onChanged = { AppPreferences.setCoverCacheMb(requireContext(), it) }
+        )
+        trimCoversOnRelease(coverSlider)
+
         exportButton.setOnClickListener { exportServer() }
+    }
+
+    private fun setUpCacheSlider(
+        slider: Slider,
+        valueLabel: TextView,
+        minMb: Int,
+        maxMb: Int,
+        stepMb: Int,
+        storedMb: Int,
+        onChanged: (Int) -> Unit
+    ) {
+        // диапазон задаётся кодом, а не в разметке: границы живут в AppPreferences,
+        // и XML не смог бы на них сослаться, а две копии чисел разъехались бы
+        slider.valueFrom = minMb.toFloat()
+        slider.valueTo = maxMb.toFloat()
+        slider.stepSize = stepMb.toFloat()
+
+        slider.value = storedMb.toFloat()
+        valueLabel.text = getString(R.string.settings_cache_size_value, storedMb)
+
+        slider.addOnChangeListener { _, value, fromUser ->
+            val megabytes = value.toInt()
+            valueLabel.text = getString(R.string.settings_cache_size_value, megabytes)
+            if (fromUser) onChanged(megabytes)
+        }
+    }
+
+    /**
+     * Runs on release rather than on every step of the drag: the trim walks the whole cache
+     * directory, and doing that once per notch would be pointless I/O.
+     */
+    private fun trimCoversOnRelease(slider: Slider) {
+        slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) = Unit
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                    CoverDiskCache.trimToLimit(requireContext())
+                }
+            }
+        })
     }
 
     private fun confirmAddressChange(host: String) {

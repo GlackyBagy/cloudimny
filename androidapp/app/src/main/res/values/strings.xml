@@ -77,6 +77,15 @@
     <string name="settings_address_confirm_message">The app will talk to %1$s from now on. If the pinned certificate was not issued for this address, every request will fail.</string>
     <string name="settings_address_confirm_action">Change</string>
 
+    <string name="settings_cache_section">Cache</string>
+    <string name="settings_cache_description">How much storage the app may use for playback and artwork. Both limits stay on this device: the export does not carry them.</string>
+    <string name="settings_cache_size_value">%1$d MB</string>
+
+    <string name="settings_cache_tracks_label">Downloaded tracks</string>
+    <string name="settings_cache_tracks_restart">A new limit applies the next time the app starts.</string>
+    <string name="settings_cache_covers_label">Covers</string>
+    <string name="settings_cache_covers_immediate">Applies straight away, no restart needed.</string>
+
     <string name="settings_export_section">Export</string>
     <string name="settings_export_description">Sends the address, certificate fingerprint and access token as JSON — enough to connect another client to this server. The token grants full access: treat the export like a password.</string>
     <string name="settings_export_button">Export server</string>
