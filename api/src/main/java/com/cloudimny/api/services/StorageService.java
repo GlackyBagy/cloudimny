@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
@@ -43,6 +44,23 @@ public class StorageService {
         this.webClient = WebClient.builder()
                 .clientConnector(externalHttpConnector)
                 .build();
+    }
+
+    public Mono<Void> deleteTrack(String key) {
+        return deleteByKeyAndBucket(key, TRACKS_BUCKET_NAME);
+    }
+
+    public Mono<Void> deleteCover(String key) {
+        return deleteByKeyAndBucket(key, COVERS_BUCKET_NAME);
+    }
+
+    private Mono<Void> deleteByKeyAndBucket(String key, String bucket) {
+        var request = DeleteObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+
+        return Mono.fromFuture(s3Client.deleteObject(request)).then();
     }
 
     public Mono<ResponseEntity<Flux<DataBuffer>>> loadTrack(String key, String range) {
@@ -113,7 +131,7 @@ public class StorageService {
                 .flatMap(response -> {
                     byte[] body = response.getBody();
                     if (body == null || body.length == 0) {
-                        return Mono.<PutObjectResponse>empty();
+                        return Mono.empty();
                     }
 
                     var putRequest = PutObjectRequest.builder()

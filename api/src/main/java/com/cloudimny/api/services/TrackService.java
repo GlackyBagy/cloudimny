@@ -23,11 +23,11 @@ public class TrackService {
     private final CoverEventPublisher coverEventPublisher;
 
     public Mono<Track> create(TrackPayload payload) {
-        return artistService.createFromNickname(payload.artist().nickname())
+        return artistService.createFromNicknameIfAbsent(payload.artist().nickname())
                 .map(artist -> trackMapper.toTrack(payload, null, artist.id()))
                 .map(track -> new Track(track.id(), track.title().trim(), track.artistId(), track.storageKey(), Instant.now(), null))
                 .flatMap(repository::save)
-                .doOnNext(track -> coverEventPublisher.publishResolveTrackCoverEvent(track.id()));
+                .doOnNext(track -> coverEventPublisher.publishDownloadCoverEvent(track.id()));
     }
 
     public Mono<Track> findById(UUID id) {
@@ -44,7 +44,7 @@ public class TrackService {
 
     public Mono<Track> update(UUID id, TrackPayload payload) {
         return repository.findById(id)
-                .flatMap(existing -> artistService.createFromNickname(payload.artist().nickname())
+                .flatMap(existing -> artistService.createFromNicknameIfAbsent(payload.artist().nickname())
                         .map(artist -> new Track(
                                 existing.id(),
                                 payload.title(),
@@ -54,6 +54,10 @@ public class TrackService {
                                 existing.releaseId()
                         )))
                 .flatMap(repository::save);
+    }
+
+    public Mono<Void> deleteByID(UUID id) {
+        return repository.deleteById(id);
     }
 
     public Mono<TrackDTO> toDTO(Track track) {

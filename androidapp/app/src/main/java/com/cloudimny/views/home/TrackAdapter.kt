@@ -12,20 +12,28 @@ import com.cloudimny.models.meta.Track
 
 class TrackAdapter(
     private val tracks: List<Track>,
-    private val onTrackClick: (Track) -> Unit
+    private val onTrackClick: (Track) -> Unit,
+    private val onTrackLongClick: (Track, View) -> Unit
 ) : RecyclerView.Adapter<TrackAdapter.TrackViewHolder>() {
-
     inner class TrackViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cover: ImageView = view.findViewById(R.id.track_cover)
         val title: TextView = view.findViewById(R.id.track_title)
+
         val artist: TextView = view.findViewById(R.id.track_artist)
 
         init {
             view.setOnClickListener {
                 val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
+                if (position != RecyclerView.NO_POSITION)
                     onTrackClick(tracks[position])
+            }
+
+            view.setOnLongClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onTrackLongClick(tracks[position], view)
                 }
+                true // event handled
             }
         }
     }

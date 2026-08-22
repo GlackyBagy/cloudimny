@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cloudimny.R
 import com.cloudimny.player.PlayerViewModel
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.TrackMenuHelper
 import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.MainActivity
 import com.cloudimny.views.home.TrackAdapter
@@ -30,7 +31,14 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_item_list) {
         }
         val swipeRefresh: SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
         swipeRefresh.setColorSchemeResources(R.color.secondary)
-        swipeRefresh.setOnRefreshListener { loadPlaylist(playlistId, itemsList, swipeRefresh, forceRefresh = true) }
+        swipeRefresh.setOnRefreshListener {
+            loadPlaylist(
+                playlistId,
+                itemsList,
+                swipeRefresh,
+                forceRefresh = true
+            )
+        }
 
         loadPlaylist(playlistId, itemsList, swipeRefresh, forceRefresh = false)
     }
@@ -45,12 +53,23 @@ class PlaylistDetailFragment : Fragment(R.layout.fragment_item_list) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             runCatchingServerErrors {
-                val playlist = MetadataService.loadPlaylist(requireContext(), playlistId, forceRefresh)
+                val playlist =
+                    MetadataService.loadPlaylist(requireContext(), playlistId, forceRefresh)
                 (requireActivity() as MainActivity).setHeaderTitle(playlist.name.orEmpty())
 
-                itemsList.adapter = TrackAdapter(playlist.songList) { track ->
-                    playerViewModel.play(playlist.songList, track)
-                }
+                itemsList.adapter = TrackAdapter(
+                    playlist.songList, { track ->
+                        playerViewModel.play(playlist.songList, track)
+                    },
+                    { track, view ->
+                        TrackMenuHelper.showTrackOptionsMenu(
+                            view,
+                            track,
+                            parentFragmentManager,
+                            viewLifecycleOwner.lifecycleScope
+                        )
+                    }
+                )
             }
             swipeRefresh.isRefreshing = false
         }

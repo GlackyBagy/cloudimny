@@ -41,6 +41,14 @@ public class ReleaseService {
         return repository.findAllUnresolved();
     }
 
+    public Flux<UUID> findAllUnusedIds() {
+        return repository.findAllUnused();
+    }
+
+    public Mono<Void> deleteById(UUID id) {
+        return repository.deleteById(id);
+    }
+
     /**
      * Covers are stored under the release MBID, so every track of an album resolves to one object.
      */

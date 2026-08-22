@@ -11,6 +11,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cloudimny.R
 import com.cloudimny.player.PlayerViewModel
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.TrackMenuHelper
 import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.AllTracksFragment
 import com.cloudimny.views.MainActivity
@@ -61,20 +62,34 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             runCatchingServerErrors {
-                val allTracksDeferred = async { MetadataService.loadAllTracks(requireContext(), forceRefresh) }
-                val allPlaylistsDeferred = async { MetadataService.loadAllPlaylists(requireContext(), forceRefresh) }
+                val allTracksDeferred =
+                    async { MetadataService.loadAllTracks(requireContext(), forceRefresh) }
+                val allPlaylistsDeferred =
+                    async { MetadataService.loadAllPlaylists(requireContext(), forceRefresh) }
                 val allTracks = allTracksDeferred.await()
                 val allPlaylists = allPlaylistsDeferred.await()
 
-                tracksList.adapter = TrackAdapter(allTracks.take(PREVIEW_SIZE)) { track ->
-                    playerViewModel.play(allTracks, track)
-                }
+                tracksList.adapter = TrackAdapter(
+                    allTracks.take(PREVIEW_SIZE), { track ->
+                        playerViewModel.play(allTracks, track)
+                    },
+                    { track, view ->
+                        TrackMenuHelper.showTrackOptionsMenu(
+                            view,
+                            track,
+                            parentFragmentManager,
+                            viewLifecycleOwner.lifecycleScope
+                        )
+                    }
+                )
 
-                noPlaylistsLabel.visibility = if (allPlaylists.isEmpty()) View.VISIBLE else View.GONE
-                playlistsList.adapter = PlaylistAdapter(allPlaylists.take(PREVIEW_SIZE)) { playlist ->
-                    val playlistId = playlist.id ?: return@PlaylistAdapter
-                    openFragment(PlaylistDetailFragment.newInstance(playlistId))
-                }
+                noPlaylistsLabel.visibility =
+                    if (allPlaylists.isEmpty()) View.VISIBLE else View.GONE
+                playlistsList.adapter =
+                    PlaylistAdapter(allPlaylists.take(PREVIEW_SIZE)) { playlist ->
+                        val playlistId = playlist.id ?: return@PlaylistAdapter
+                        openFragment(PlaylistDetailFragment.newInstance(playlistId))
+                    }
             }
 
             swipeRefresh.isRefreshing = false

@@ -25,9 +25,15 @@ public class CoverEventPublisher {
         this.trackService = trackService;
     }
 
-    public void publishResolveTrackCoverEvent(UUID trackId) {
+    public void publishDownloadCoverEvent(UUID trackId) {
         applicationEventPublisher.publishEvent(
-                new TrackCoverEvent(trackId)
+                new DownloadCoverEvent(trackId)
+        );
+    }
+
+    public void publishDeleteCoverEvent(UUID releaseId) {
+        applicationEventPublisher.publishEvent(
+                new DeleteCoverEvent(releaseId)
         );
     }
 
@@ -37,7 +43,14 @@ public class CoverEventPublisher {
                 .map(Release::id)
                 .flatMap(trackService::findFirstByReleaseId)
                 .map(Track::id)
-                .doOnNext(this::publishResolveTrackCoverEvent)
+                .doOnNext(this::publishDownloadCoverEvent)
+                .subscribe();
+    }
+
+    @Scheduled(fixedDelay = 900_000) // 15 mins
+    protected void publishUnused() {
+        releaseService.findAllUnusedIds()
+                .doOnNext(this::publishDeleteCoverEvent)
                 .subscribe();
     }
 }

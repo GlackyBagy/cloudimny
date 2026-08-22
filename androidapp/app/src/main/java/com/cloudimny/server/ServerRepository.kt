@@ -7,6 +7,7 @@ import com.cloudimny.models.meta.Playlist
 import com.cloudimny.models.meta.Track
 import com.cloudimny.server.security.ServerCertificateStore
 import com.cloudimny.util.displayName
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
@@ -21,9 +22,11 @@ import okio.source
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import java.util.UUID
@@ -40,6 +43,15 @@ interface TrackApi {
         @Part("meta") track: RequestBody,
         @Part file: MultipartBody.Part
     ): Track
+
+    @PUT("api/v1/track/{id}")
+    suspend fun editTrack(@Path("id") id: UUID, @Body track: RequestBody): Track
+
+    @PUT("api/v1/artist/{id}")
+    suspend fun editArtist(@Path("id") id: UUID, @Body artist: RequestBody): Artist
+
+    @DELETE("api/v1/track/{id}")
+    suspend fun deleteTrack(@Path("id") id: UUID)
 
     @GET("api/v1/playlist")
     suspend fun getAllPlaylists(): List<Playlist>
@@ -58,8 +70,7 @@ object ServerRepository {
     suspend fun uploadTrack(context: Context, fileUri: Uri, title: String, artist: String): Track {
         val track =
             Track(null, title, Artist(null, artist)) // using null, bc objects (may) not exist
-        val trackPart = RetrofitClient.gson.toJson(track)
-            .toRequestBody("application/json".toMediaType())
+        val trackPart = toJson(track)
 
         val filePart = MultipartBody.Part.createFormData(
             "file",
@@ -69,6 +80,19 @@ object ServerRepository {
 
         return RetrofitClient.trackApi(context).uploadTrack(trackPart, filePart)
     }
+
+    suspend fun deleteTrack(context: Context, id: UUID) =
+        RetrofitClient.trackApi(context).deleteTrack(id)
+
+    suspend fun editTrack(context: Context, track: Track) =
+         RetrofitClient.trackApi(context).editTrack(track.id!!, toJson(track))
+
+    suspend fun editArtist(context: Context, artist: Artist) =
+        RetrofitClient.trackApi(context).editArtist(artist.id!!, toJson(artist))
+
+    private fun toJson(obj: Any) =
+        RetrofitClient.gson.toJson(obj)
+            .toRequestBody("application/json".toMediaType())
 
     private fun uriRequestBody(context: Context, uri: Uri): RequestBody =
         object : RequestBody() {
@@ -107,7 +131,7 @@ private object RetrofitClient {
     private var cachedHttpClient: OkHttpClient? = null
     private var cachedBaseUrl: String? = null
 
-    val gson = GsonBuilder()
+    val gson: Gson = GsonBuilder()
         .registerTypeAdapter(UUID::class.java, object : TypeAdapter<UUID>() {
             override fun write(out: JsonWriter, value: UUID?) {
                 out.value(value?.toString())

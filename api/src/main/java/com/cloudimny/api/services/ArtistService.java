@@ -17,7 +17,7 @@ public class ArtistService {
     private final ArtistRepository repository;
     private final ArtistMapper artistMapper;
 
-    public Mono<Artist> createFromNickname(String nickname) {
+    public Mono<Artist> createFromNicknameIfAbsent(String nickname) {
         return repository.findByNicknameIgnoreCase(nickname.trim())
                 .switchIfEmpty(repository.save(new Artist(null, nickname.trim())));
     }

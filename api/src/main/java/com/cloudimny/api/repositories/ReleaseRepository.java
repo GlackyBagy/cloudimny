@@ -45,4 +45,16 @@ public interface ReleaseRepository extends R2dbcRepository<Release, UUID> {
                        (NOW() AT TIME ZONE 'UTC') - r.timestamp > INTERVAL '10 minutes'
             """)
     Flux<Release> findAllUnresolved();
+
+    @Query("""
+             SELECT id
+             FROM releases r
+             WHERE (NOW() AT TIME ZONE 'UTC') - r.timestamp > INTERVAL '1 day'
+                 AND NOT EXISTS (
+                                   SELECT 1
+                                   FROM tracks t
+                                   WHERE t.release_id = r.id
+                                )
+            """)
+    Flux<UUID> findAllUnused();
 }

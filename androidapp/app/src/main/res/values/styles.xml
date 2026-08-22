@@ -109,4 +109,42 @@
         <item name="android:paddingHorizontal">@dimen/row_padding_horizontal</item>
         <item name="android:paddingVertical">@dimen/row_padding_vertical</item>
     </style>
+
+    <!-- ===== Dialogs =====
+         M3-диалог берёт фон из colorSurfaceContainerHigh, а кнопки красит в
+         colorPrimary. Первого в палитре нет — фон уезжает в серый baseline M3,
+         второе не читается: розовые буквы на розовом фоне. Поэтому и фон, и
+         цвет текста кнопок задаются явно -->
+    <style name="ThemeOverlay.Cloudimny.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/Widget.Cloudimny.Dialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Widget.Cloudimny.Dialog.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Widget.Cloudimny.Dialog.Body</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Cloudimny.Dialog.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Cloudimny.Dialog.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Cloudimny.Dialog.Button</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Dialog" parent="MaterialAlertDialog.Material3">
+        <item name="backgroundTint">?attr/colorSurface</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Cloudimny.Dialog</item>
+    </style>
+
+    <style name="ShapeAppearance.Cloudimny.Dialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_surface</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Dialog.Title" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">@dimen/text_section</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Dialog.Body" parent="MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Dialog.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+    </style>
 </resources>

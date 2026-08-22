@@ -9,7 +9,10 @@ import com.cloudimny.api.models.mapping.TrackMapper;
 import com.cloudimny.api.models.payload.ArtistPayload;
 import com.cloudimny.api.models.payload.PlaylistPayload;
 import com.cloudimny.api.models.payload.TrackPayload;
-import com.cloudimny.api.services.*;
+import com.cloudimny.api.services.ArtistService;
+import com.cloudimny.api.services.PlaylistService;
+import com.cloudimny.api.services.StorageService;
+import com.cloudimny.api.services.TrackService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -26,22 +29,11 @@ public class MetadataController {
     private final TrackService trackService;
     private final PlaylistService playlistService;
     private final TrackMapper trackMapper;
-    private final CoverSourceService coverSourceService;
     private final StorageService storageService;
-
-    @GetMapping("/test")
-    public Mono<Void> test(@RequestParam String track,
-                           @RequestParam String artist) {
-        return coverSourceService.searchRecording(track, artist)
-                .flatMap(response -> Mono.justOrEmpty(coverSourceService.pickRelease(response)))
-                .flatMap(release -> coverSourceService.resolveCover(release)
-                        .flatMap(image -> storageService.downloadCover(
-                                release.id().toString(), image.thumbnails().get("large"))));
-    }
 
     @PostMapping("/artist")
     public Mono<Void> createArtist(@RequestBody ArtistPayload payload) {
-        return artistService.createFromNickname(payload.nickname()).then();
+        return artistService.createFromNicknameIfAbsent(payload.nickname()).then();
     }
 
     @PutMapping("/artist/{id}")
@@ -77,5 +69,13 @@ public class MetadataController {
                 .groupBy(Track::artistId)
                 .flatMap(grouped -> artistService.findById(grouped.key())
                         .flatMapMany(artist -> grouped.map(x -> trackMapper.toDTO(x, artist))));
+    }
+
+    @DeleteMapping("/track/{id}")
+    public Mono<Void> deleteTrack(@PathVariable UUID id) {
+        return trackService.findById(id)
+                .flatMap(track -> Mono.justOrEmpty(track.storageKey()))
+                .flatMap(storageService::deleteTrack)
+                .then(trackService.deleteByID(id));
     }
 }

@@ -25,6 +25,7 @@
 
         <!-- Widget defaults -->
         <item name="materialButtonStyle">@style/Widget.Cloudimny.Button</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Cloudimny.Dialog</item>
     </style>
 
     <style name="Theme.Cloudimny" parent="Base.Theme.Cloudimny" />

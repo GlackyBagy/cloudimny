@@ -19,7 +19,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TrackCoverEventHandler {
+class CoverEventHandler {
 
     private static final String THUMBNAIL_SIZE = "large";
 
@@ -30,7 +30,16 @@ public class TrackCoverEventHandler {
     private final ReleaseService releaseService;
 
     @EventListener
-    public Mono<Void> handle(TrackCoverEvent event) {
+    protected Mono<Void> handleDelete(DeleteCoverEvent event) {
+        String coverKey = releaseService.coverKey(event.getReleaseId());
+
+        return storageService.deleteCover(coverKey)
+                .then(releaseService.deleteById(event.getReleaseId()))
+                .doOnError(error -> log.error("Cover cleanup failed for release {}", event.getReleaseId(), error));
+    }
+
+    @EventListener
+    protected Mono<Void> handleDownload(DownloadCoverEvent event) {
         log.info("Cover event received for track {}", event.getTrackId());
 
         return resolveRelease(event.getTrackId())

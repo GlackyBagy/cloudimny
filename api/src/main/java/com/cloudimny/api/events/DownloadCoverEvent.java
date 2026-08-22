@@ -6,11 +6,11 @@ import org.springframework.context.ApplicationEvent;
 import java.util.UUID;
 
 @Getter
-public class TrackCoverEvent extends ApplicationEvent {
+class DownloadCoverEvent extends ApplicationEvent {
 
     private final UUID trackId;
 
-    public TrackCoverEvent(UUID trackId) {
+    public DownloadCoverEvent(UUID trackId) {
         super(trackId);
         this.trackId = trackId;
     }

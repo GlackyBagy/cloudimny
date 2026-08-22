@@ -1,5 +1,6 @@
 package com.cloudimny.util
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -12,8 +13,22 @@ import java.io.IOException
 
 private const val TAG = "ServerErrorHandling"
 
+/** Reports through the fragment, which stays silent once it is detached. */
+suspend fun Fragment.runCatchingServerErrors(block: suspend CoroutineScope.() -> Unit) {
+    val messageResId = catchServerErrors(this::class.simpleName, block) ?: return
+    if (!isAdded) return
+    Toast.makeText(requireContext(), messageResId, Toast.LENGTH_SHORT).show()
+}
+
+/** The same, for callers with no fragment at hand — a helper driven by a view, say. */
+suspend fun Context.runCatchingServerErrors(block: suspend CoroutineScope.() -> Unit) {
+    val messageResId = catchServerErrors(this::class.simpleName, block) ?: return
+    Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show()
+}
+
 /**
- * Runs [block] without letting a failed request take the app down.
+ * Runs [block] without letting a failed request take the app down, and returns the message to
+ * report — or null when [block] went through.
  *
  * Only the failures that really mean "the server did not answer" are reported as such — anything
  * else is a bug in our own code, and dressing it up as a connection problem is how a crash turns
@@ -27,25 +42,23 @@ private const val TAG = "ServerErrorHandling"
  * job the moment it throws, without waiting to be awaited, so a `try` wrapped around `await()`
  * alone catches the exception only after the enclosing `launch` has already crashed the app.
  */
-suspend fun Fragment.runCatchingServerErrors(block: suspend CoroutineScope.() -> Unit) {
+private suspend fun catchServerErrors(
+    owner: String?,
+    block: suspend CoroutineScope.() -> Unit
+): Int? =
     try {
         coroutineScope { block() }
+        null
     } catch (e: CancellationException) {
         throw e
     } catch (e: IOException) {
-        report(R.string.cannot_connect_message)
+        R.string.cannot_connect_message
     } catch (e: HttpException) {
-        report(R.string.cannot_connect_message)
+        R.string.cannot_connect_message
     } catch (e: IllegalStateException) {
         // сервер ещё не настроен: базовый URL не из чего построить
-        report(R.string.cannot_connect_message)
+        R.string.cannot_connect_message
     } catch (e: Exception) {
-        Log.e(TAG, "unexpected failure in ${this::class.simpleName}", e)
-        report(R.string.unknown_error_message)
+        Log.e(TAG, "unexpected failure in $owner", e)
+        R.string.unknown_error_message
     }
-}
-
-private fun Fragment.report(messageResId: Int) {
-    if (!isAdded) return
-    Toast.makeText(requireContext(), messageResId, Toast.LENGTH_SHORT).show()
-}

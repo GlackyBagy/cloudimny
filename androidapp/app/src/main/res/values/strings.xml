@@ -63,6 +63,8 @@
     <string name="mirror_notification_stop">Stop</string>
     <string name="menu_upload_track">Upload track</string>
     <string name="menu_create_playlist">Create playlist</string>
+    <string name="menu_edit_track_meta">Edit track metadata</string>
+    <string name="menu_delete_track">Delete track from server</string>
 
     <!-- Home -->
     <string name="all_tracks">All tracks</string>
@@ -115,6 +117,20 @@
     <string name="track_title_label">Title</string>
     <string name="track_artist_label">Artist</string>
     <string name="upload_button">Upload</string>
+
+    <!-- Edit -->
+    <string name="edit_track_title">Edit track metadata</string>
+    <string name="save_button_title">Save changes</string>
+    <string name="artist_rename_strategy_title">Choose artist rename strategy</string>
+    <string name="artist_rename_strategy_message">Choose how to change artist\'s nickname</string>
+    <string name="artist_rename_single_track_strategy">Only this track</string>
+    <string name="artist_rename_all_tracks_strategy">All tracks</string>
+    <string name="delete_track_title">Delete track</string>
+    <string name="delete_track_message">This action will delete track \"%s\" from the server. Sure you want to continue?</string>
+    <string name="delete_anyway">Delete anyway</string>
+
+    <!-- Common -->
+    <string name="request_sent">Request sent</string>
 
     <!-- Playlists -->
     <string name="create_playlist_title">Create playlist</string>
