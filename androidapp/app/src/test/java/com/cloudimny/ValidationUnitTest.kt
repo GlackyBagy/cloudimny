@@ -25,7 +25,14 @@ class ValidationUnitTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["123.123.123.123:123", "1.1.1.1:22"])
+    @ValueSource(strings = ["2001:db8::1:22", "2001:db8::1", "[2001:db8::1]", "[2001:db8::1]22", "[]:22"])
+    fun invalid_when_ipv6_malformed(param: String) {
+        val credentials = SshConnectionCredentials(param, "user", "password")
+        assertEquals(INVALID_ADDRESS, validateSshCredentials(credentials))
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = ["123.123.123.123:123", "1.1.1.1:22", "[2001:db8::1]:22", "[::1]:22"])
     fun valid_when_address_correct(param: String) {
         val credentials = SshConnectionCredentials(param, "user", "password")
         assertEquals(VALID, validateSshCredentials(credentials))

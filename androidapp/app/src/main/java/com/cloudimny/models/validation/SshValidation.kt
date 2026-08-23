@@ -29,15 +29,30 @@ fun validateSshCredentials(credentials: SshConnectionCredentials): SshValidation
     return SshValidationResult.VALID
 }
 
+/**
+ * Expects host:port, with an IPv6 literal bracketed the way a URL brackets it. Without the brackets
+ * the last colon of the address is indistinguishable from the port separator, and `2001:db8::1`
+ * entered without a port would come apart into host `2001:db8:` and port 1 instead of being
+ * rejected.
+ */
 private fun validateAddress(address: String): Boolean {
-    val separatorIndex = address.lastIndexOf(':')
-    if (separatorIndex <= 0 || separatorIndex == address.length - 1)
-        return false
+    if (address.startsWith("[")) {
+        val closingIndex = address.indexOf(']')
+        if (closingIndex <= 1) return false
+        return validatePort(address.substring(closingIndex + 1))
+    }
 
-    val host = address.substring(0, separatorIndex)
-    val port = address.substring(separatorIndex + 1).toIntOrNull() ?: return false
+    val separatorIndex = address.indexOf(':')
+    if (separatorIndex <= 0) return false
 
-    return host.isNotEmpty() && port in 1..65535
+    return validatePort(address.substring(separatorIndex))
+}
+
+/** [remainder] is what the address leaves after the host, separating colon included. */
+private fun validatePort(remainder: String): Boolean {
+    if (!remainder.startsWith(":")) return false
+    val port = remainder.substring(1).toIntOrNull() ?: return false
+    return port in 1..65535
 }
 
 private fun validateUsername(username: String): Boolean {
