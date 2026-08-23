@@ -45,8 +45,7 @@ class CoverEventHandler {
         return resolveRelease(event.getTrackId())
                 .doOnSubscribe(_ -> log.info("Cover chain subscribed for track {}", event.getTrackId()))
                 .doOnNext(release -> log.info("Picked release {} for track {}", release.id(), event.getTrackId()))
-                .flatMap(release -> trackService.attachRelease(event.getTrackId(), release.id())
-                        .then(storeCoverIfUnclaimed(release)))
+                .flatMap(release -> linkAndStoreCover(event.getTrackId(), release))
                 .doOnError(error -> log.error("Cover resolution failed for track {}", event.getTrackId(), error))
                 .then();
     }
@@ -59,12 +58,10 @@ class CoverEventHandler {
                 .flatMap(response -> Mono.justOrEmpty(coverService.pickRelease(response)));
     }
 
-    /**
-     * Only the handler that created the release row fetches the cover. Every other track of the same
-     * album loses the race, skips both Cover Art Archive and the download, and just links itself.
-     */
-    private Mono<Void> storeCoverIfUnclaimed(ReleaseResponse release) {
+    private Mono<Void> linkAndStoreCover(UUID trackId, ReleaseResponse release) {
         return releaseService.claim(release)
+                .flatMap(claimed -> trackService.attachRelease(trackId, release.id())
+                        .thenReturn(claimed))
                 .filter(Boolean::booleanValue)
                 .flatMap(_ -> storeCover(release));
     }
