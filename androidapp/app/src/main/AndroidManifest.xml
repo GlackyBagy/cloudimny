@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <!-- зеркалирование живёт, пока живёт процесс: без исключения из оптимизаций
+         система усыпит его вместе с подпиской на чужую медиасессию -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
         android:name=".CloudimnyApplication"
@@ -17,7 +21,7 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/cloudimny_icon_light"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Androidapp">
+        android:theme="@style/Theme.Cloudimny">
         <activity
             android:name=".views.MainActivity"
             android:exported="true"
@@ -43,6 +47,33 @@
             android:foregroundServiceType="mediaPlayback">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
+
+        <!--
+            Слушатель уведомлений ничего не читает: он нужен только чтобы система пустила нас
+            к MediaSessionManager.getActiveSessions — доступ выдаётся компоненту, а не приложению.
+            exported обязателен, иначе система не сможет к нему привязаться.
+        -->
+        <!--
+            specialUse, а не mediaPlayback: с Android 14 медиатип выдаётся только сервису,
+            который действительно что-то играет, а этот в режиме passthrough намеренно молчит.
+        -->
+        <service
+            android:name=".mirror.MirrorService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="mirrors playback of another media app onto the user's own library" />
+        </service>
+
+        <service
+            android:name=".mirror.MirrorNotificationListener"
+            android:exported="true"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
     </application>

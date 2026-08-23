@@ -15,10 +15,8 @@ import com.cloudimny.views.setup.SetupCredentialsFragment
 
 class MainActivity : AppCompatActivity() {
     fun setHeaderTitle(title: CharSequence) {
-        findViewById<TextView>(R.id.header_title).apply {
-            text = title
-            visibility = View.VISIBLE
-        }
+        findViewById<TextView>(R.id.header_title).text = title
+        findViewById<View>(R.id.header).visibility = View.VISIBLE
     }
 
     fun openPlayer() {
@@ -39,11 +37,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        val header = findViewById<TextView>(R.id.header_title)
+        val header = findViewById<View>(R.id.header)
         ViewCompat.setOnApplyWindowInsetsListener(header) { view, insets ->
             val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
             view.updatePadding(top = statusBars.top)
             insets
+        }
+
+        findViewById<View>(R.id.settings_button).setOnClickListener {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.main, SettingsFragment())
+                .addToBackStack(null)
+                .commit()
         }
 
         if (savedInstanceState == null) {

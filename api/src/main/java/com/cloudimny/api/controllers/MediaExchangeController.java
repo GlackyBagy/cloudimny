@@ -2,6 +2,7 @@ package com.cloudimny.api.controllers;
 
 import com.cloudimny.api.models.dto.TrackDTO;
 import com.cloudimny.api.models.payload.TrackPayload;
+import com.cloudimny.api.services.ReleaseService;
 import com.cloudimny.api.services.StorageService;
 import com.cloudimny.api.services.TrackService;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +21,34 @@ import java.util.UUID;
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
 @Slf4j
-public class AudioExchangeController {
+public class MediaExchangeController {
     private final StorageService storageService;
     private final TrackService trackService;
+    private final ReleaseService releaseService;
 
     @PostMapping("/upload")
-    public Mono<TrackDTO> upload(@RequestPart("file") FilePart file,
-                                 @RequestPart("meta") TrackPayload payload) {
+    public Mono<TrackDTO> uploadTrack(@RequestPart("file") FilePart file,
+                                      @RequestPart("meta") TrackPayload payload) {
         log.info("Uploading a track: {}", payload);
         return trackService.create(payload)
-                .flatMap(track -> storageService.upload(track.id().toString(), file)
+                .flatMap(track -> storageService.uploadTrack(track.id().toString(), file)
                         .then(trackService.attachStorageKey(track, track.id().toString())))
                 .flatMap(trackService::toDTO);
     }
 
     @GetMapping("/streaming/{id}")
-    public Mono<ResponseEntity<Flux<DataBuffer>>> get(@PathVariable UUID id,
-                                                      @RequestHeader(value = HttpHeaders.RANGE, required = false) String range) {
+    public Mono<ResponseEntity<Flux<DataBuffer>>> trackById(@PathVariable UUID id,
+                                                            @RequestHeader(value = HttpHeaders.RANGE, required = false) String range) {
         return trackService.findById(id)
-                .flatMap(track -> storageService.load(track.storageKey(), range));
+                .flatMap(track -> storageService.loadTrack(track.storageKey(), range));
     }
 
+    @GetMapping("/cover")
+    public Mono<ResponseEntity<Flux<DataBuffer>>> coverByTrackId(@RequestParam UUID trackId) {
+        return trackService.findById(trackId)
+                .flatMap(track -> Mono.justOrEmpty(track.releaseId()))
+                .map(releaseService::coverKey)
+                .flatMap(storageService::loadCover)
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
+    }
 }

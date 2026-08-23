@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners
+        android:topLeftRadius="@dimen/corner_nav_bar"
+        android:topRightRadius="@dimen/corner_nav_bar" />
+    <solid android:color="@color/surface" />
+</shape>

@@ -1,57 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Cloudimny</string>
-    <string name="setup_title">Let\'s setup\nyour server</string>
 
+    <!-- Setup -->
+    <string name="setup_title">Let\'s setup\nyour server</string>
+    <string name="setup_address_label">Server address with SSH port</string>
     <string name="setup_address_hint">example.com:22 or 1.1.1.1:22</string>
-    <string name="setup_address_label">Server URI with port</string>
     <string name="setup_username_label">SSH username</string>
     <string name="setup_username_hint">root</string>
     <string name="setup_password_label">Password</string>
     <string name="setup_button">Setup</string>
 
+    <string name="setup_auth_label">Authentication</string>
+    <string name="setup_auth_password">Password</string>
+    <string name="setup_auth_key">SSH key</string>
+    <string name="setup_key_label">Private key</string>
+    <string name="setup_key_input_hint">-----BEGIN OPENSSH PRIVATE KEY-----</string>
+    <string name="setup_key_description">Paste the whole private key file, from the -----BEGIN line to the -----END line. A path to the key, or the public half of the pair, will not work.</string>
+    <string name="setup_sudo_password_label">Sudo password</string>
+    <string name="setup_sudo_password_description">Used only for sudo on the server, not to log in. Leave it empty if sudo there does not ask for a password.</string>
+    <string name="setting_server_up">Setting up\nyour server</string>
+    <string name="it_might_take_a_few_minutes">It might take a few minutes</string>
+
+    <!-- Setup: import -->
+    <string name="setup_import_section">Already have a server</string>
+    <string name="setup_import_description">Import the file exported from another device to connect to a server that is already set up. Nothing is configured over SSH.</string>
+    <string name="setup_import_button">Import server file</string>
+
+    <!-- Setup errors -->
     <string name="invalid_address_message">Invalid address provided</string>
     <string name="invalid_username_message">Invalid username provided</string>
     <string name="invalid_password_message">Invalid password provided</string>
+    <string name="invalid_key_message">Paste the private key file whole, from the -----BEGIN line to the -----END line</string>
+    <string name="invalid_key_is_public_message">That is the public key. Paste the private one — the file without the .pub extension</string>
     <string name="invalid_credentials_message">Invalid credentials, connection refused</string>
     <string name="cannot_connect_message">Unable connect to the server</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="setting_server_up">Setting up\nyour server</string>
-    <string name="it_might_take_a_few_minutes">It might take a few minutes</string>
+    <string name="unknown_error_message">Something went wrong</string>
     <string name="setup_failed_message">Unable to configure server</string>
     <string name="setup_timeout_message">Server setup took too long</string>
     <string name="certificate_error_message">Unable to retrieve server certificate</string>
-    <string name="play_button">play_button</string>
-    <string name="track_cover">track_cover</string>
-    <string name="previous_track_button">previous_track_button</string>
-    <string name="next_track_button">next_track_button</string>
-    <string name="close_player_button">close_player_button</string>
+    <string name="import_read_failed_message">Unable to read the selected file</string>
+    <string name="import_invalid_file_message">This file is not a server export</string>
+
+    <!-- Navigation -->
     <string name="nav_home">Home</string>
     <string name="nav_search">Search</string>
+    <string name="nav_mirror">Mirror</string>
     <string name="nav_add">Create</string>
-    <string name="all_tracks">All tracks</string>
-    <string name="all_playlists">All playlists</string>
-    <string name="see_all_tracks_button">see_all_tracks_button</string>
-    <string name="see_all_playlists_button">see_all_playlists_button</string>
-    <string name="playlist_cover">playlist_cover</string>
-    <string name="playlist_track_count">%1$d tracks</string>
-    <string name="no_playlists_yet">No playlists yet</string>
+
+    <!-- Mirror -->
+    <string name="mirror_access_title">Mirror another player</string>
+    <string name="mirror_access_message">Cloudimny needs notification access to see what Spotify, YouTube Music or any other player is playing, and plays your own copy instead. Nothing from your notifications is read or stored.\n\nThe other app keeps its own notification — the controls are duplicated, not replaced.</string>
+    <string name="mirror_access_grant">Open settings</string>
+    <string name="mirror_battery_title">Keep running in the background</string>
+    <string name="mirror_battery_message">Mirroring stops if the system suspends the app. Allow it to keep running in the background?</string>
+    <string name="mirror_started">Mirroring on — start playing in another app. Long-press to stop.</string>
+    <string name="mirror_stopped">Mirroring off</string>
+    <string name="mirror_waiting">Waiting for another player…</string>
+    <string name="mirror_notification_waiting">Waiting for another player</string>
+    <string name="mirror_notification_substituted">Playing your copy</string>
+    <string name="mirror_notification_passthrough">Not in your library — original playing</string>
+    <string name="mirror_notification_stop">Stop</string>
     <string name="menu_upload_track">Upload track</string>
     <string name="menu_create_playlist">Create playlist</string>
-    <string name="uploading_track_title">Uploading %1$s</string>
+    <string name="menu_edit_track_meta">Edit track metadata</string>
+    <string name="menu_delete_track">Delete track from server</string>
+
+    <!-- Home -->
+    <string name="all_tracks">All tracks</string>
+    <string name="all_playlists">All playlists</string>
+    <string name="no_playlists_yet">No playlists yet</string>
+    <string name="playlist_track_count">%1$d tracks</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search tracks and playlists</string>
+    <string name="search_tracks_header">Tracks</string>
+    <string name="search_playlists_header">Playlists</string>
+    <string name="no_search_results">No results</string>
+
+    <!-- Player -->
+    <string name="now_playing_label">Now Playing</string>
+
+    <!-- Settings -->
+    <string name="nav_settings">Settings</string>
+
+    <string name="settings_address_section">Server address</string>
+    <string name="settings_address_label">Address</string>
+    <string name="settings_address_hint">example.com, 1.1.1.1 or [2001:db8::1]</string>
+    <string name="settings_address_warning">Use this only when the same server moved to a new address. The pinned certificate stays as it is, so the connection breaks unless that certificate also covers the new address — recovering from that needs a full setup again.</string>
+    <string name="settings_address_apply">Change address</string>
+    <string name="settings_address_invalid">Address cannot be parsed</string>
+    <string name="settings_address_changed">Server address changed</string>
+    <string name="settings_address_confirm_title">Change server address?</string>
+    <string name="settings_address_confirm_message">The app will talk to %1$s from now on. If the pinned certificate was not issued for this address, every request will fail.</string>
+    <string name="settings_address_confirm_action">Change</string>
+
+    <string name="settings_cache_section">Cache</string>
+    <string name="settings_cache_description">How much storage the app may use for playback and artwork. Both limits stay on this device: the export does not carry them.</string>
+    <string name="settings_cache_size_value">%1$d MB</string>
+
+    <string name="settings_cache_tracks_label">Downloaded tracks</string>
+    <string name="settings_cache_tracks_restart">A new limit applies the next time the app starts.</string>
+    <string name="settings_cache_covers_label">Covers</string>
+    <string name="settings_cache_covers_immediate">Applies straight away, no restart needed.</string>
+
+    <string name="settings_export_section">Export</string>
+    <string name="settings_export_description">Sends the address, certificate fingerprint and access token as JSON — enough to connect another client to this server. The token grants full access: treat the export like a password.</string>
+    <string name="settings_export_button">Export server</string>
+    <string name="settings_export_unavailable">Server is not configured yet</string>
+
+    <!-- Upload -->
     <string name="upload_track_title">Upload track</string>
+    <string name="uploading_track_title">Uploading %1$s</string>
     <string name="choose_file_button">Choose audio file</string>
     <string name="no_file_chosen">No file chosen</string>
     <string name="track_title_label">Title</string>
     <string name="track_artist_label">Artist</string>
     <string name="upload_button">Upload</string>
+
+    <!-- Edit -->
+    <string name="edit_track_title">Edit track metadata</string>
+    <string name="save_button_title">Save changes</string>
+    <string name="artist_rename_strategy_title">Choose artist rename strategy</string>
+    <string name="artist_rename_strategy_message">Choose how to change artist\'s nickname</string>
+    <string name="artist_rename_single_track_strategy">Only this track</string>
+    <string name="artist_rename_all_tracks_strategy">All tracks</string>
+    <string name="delete_track_title">Delete track</string>
+    <string name="delete_track_message">This action will delete track \"%s\" from the server. Sure you want to continue?</string>
+    <string name="delete_anyway">Delete anyway</string>
+
+    <!-- Common -->
+    <string name="request_sent">Request sent</string>
+
+    <!-- Playlists -->
     <string name="create_playlist_title">Create playlist</string>
     <string name="playlist_name_label">Name</string>
     <string name="playlist_name_hint">My playlist</string>
     <string name="playlist_tracks_label">Tracks</string>
     <string name="create_button">Create</string>
-    <string name="search_hint">Search tracks and playlists</string>
-    <string name="search_tracks_header">Tracks</string>
-    <string name="search_playlists_header">Playlists</string>
-    <string name="no_search_results">No results</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_play_pause">Play or pause</string>
+    <string name="cd_previous_track">Previous track</string>
+    <string name="cd_next_track">Next track</string>
+    <string name="cd_close_player">Close player</string>
+    <string name="cd_see_all_tracks">See all tracks</string>
+    <string name="cd_see_all_playlists">See all playlists</string>
 </resources>

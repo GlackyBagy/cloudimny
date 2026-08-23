@@ -3,8 +3,8 @@
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
             <corners android:radius="2dp" />
-            <solid android:color="@color/secondary" />
-            <size android:height="4dp" />
+            <solid android:color="@color/divider" />
+            <size android:height="@dimen/seek_bar_height" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -12,7 +12,7 @@
             <shape android:shape="rectangle">
                 <corners android:radius="2dp" />
                 <solid android:color="@color/primary" />
-                <size android:height="4dp" />
+                <size android:height="@dimen/seek_bar_height" />
             </shape>
         </clip>
     </item>

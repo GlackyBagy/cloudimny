@@ -14,6 +14,8 @@ import com.cloudimny.models.meta.Playlist
 import com.cloudimny.models.meta.Track
 import com.cloudimny.player.PlayerViewModel
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.TrackMenuHelper
+import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.home.PlaylistAdapter
 import com.cloudimny.views.home.TrackAdapter
 import com.cloudimny.views.playlist.PlaylistDetailFragment
@@ -52,9 +54,11 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            allTracks = MetadataService.loadAllTracks(requireContext())
-            allPlaylists = MetadataService.loadAllPlaylists(requireContext())
-            applyFilter(searchInput.text.toString())
+            runCatchingServerErrors {
+                allTracks = MetadataService.loadAllTracks(requireContext())
+                allPlaylists = MetadataService.loadAllPlaylists(requireContext())
+                applyFilter(searchInput.text.toString())
+            }
         }
     }
 
@@ -63,16 +67,27 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
         val matchingTracks = if (trimmed.isEmpty()) emptyList() else allTracks.filter { track ->
             track.title.orEmpty().contains(trimmed, ignoreCase = true) ||
-                track.artist?.nickname.orEmpty().contains(trimmed, ignoreCase = true)
+                    track.artist?.nickname.orEmpty().contains(trimmed, ignoreCase = true)
         }
-        val matchingPlaylists = if (trimmed.isEmpty()) emptyList() else allPlaylists.filter { playlist ->
-            playlist.name.orEmpty().contains(trimmed, ignoreCase = true)
-        }
+        val matchingPlaylists =
+            if (trimmed.isEmpty()) emptyList() else allPlaylists.filter { playlist ->
+                playlist.name.orEmpty().contains(trimmed, ignoreCase = true)
+            }
 
         tracksHeader.visibility = if (matchingTracks.isEmpty()) View.GONE else View.VISIBLE
-        tracksList.adapter = TrackAdapter(matchingTracks) { track ->
-            playerViewModel.play(matchingTracks, track)
-        }
+        tracksList.adapter = TrackAdapter(
+            matchingTracks, { track ->
+                playerViewModel.play(matchingTracks, track)
+            },
+            { track, view ->
+                TrackMenuHelper.showTrackOptionsMenu(
+                    view,
+                    track,
+                    parentFragmentManager,
+                    viewLifecycleOwner.lifecycleScope
+                )
+            }
+        )
 
         playlistsHeader.visibility = if (matchingPlaylists.isEmpty()) View.GONE else View.VISIBLE
         playlistsList.adapter = PlaylistAdapter(matchingPlaylists) { playlist ->

@@ -29,6 +29,9 @@ dependencies {
     implementation("org.postgresql:r2dbc-postgresql")
     implementation("org.postgresql:postgresql:42.7.3") // Flyway needs non-reactive driver
 
+    implementation("io.github.resilience4j:resilience4j-ratelimiter:2.3.0")
+    implementation("io.github.resilience4j:resilience4j-reactor:2.3.0")
+
     implementation("org.projectlombok:lombok")
     implementation("org.mapstruct:mapstruct:1.6.3")
     implementation("org.mapstruct:mapstruct-processor:1.6.3")

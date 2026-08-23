@@ -37,6 +37,21 @@ class LocalDbRepository private constructor(context: Context) {
         insertTrack(dbHelper.writableDatabase, track)
     }
 
+    suspend fun getAllTrackIds(): List<UUID> = withContext(Dispatchers.IO) {
+        dbHelper.readableDatabase.query(
+            "tracks", arrayOf("id"), null, null, null, null, null
+        ).use { cursor ->
+            buildList { while (cursor.moveToNext()) add(UUID.fromString(cursor.getString(0))) }
+        }
+    }
+
+    suspend fun deleteTrack(id: UUID) = withContext(Dispatchers.IO) {
+        dbHelper.writableDatabase.transaction {
+            delete("tracks", "id = ?", arrayOf(id.toString()))
+            delete("playlist_track_refs", "track_id = ?", arrayOf(id.toString()))
+        }
+    }
+
     suspend fun getAllPlaylists(): List<Playlist> = withContext(Dispatchers.IO) {
         val db = dbHelper.readableDatabase
         db.query("playlists", null, null, null, null, null, null).use { cursor ->
@@ -47,6 +62,21 @@ class LocalDbRepository private constructor(context: Context) {
                     add(Playlist(id, name, getTracksForPlaylist(db, id)))
                 }
             }
+        }
+    }
+
+    suspend fun getAllPlaylistIds(): List<UUID> = withContext(Dispatchers.IO) {
+        dbHelper.readableDatabase.query(
+            "playlists", arrayOf("id"), null, null, null, null, null
+        ).use { cursor ->
+            buildList { while (cursor.moveToNext()) add(UUID.fromString(cursor.getString(0))) }
+        }
+    }
+
+    suspend fun deletePlaylist(id: UUID) = withContext(Dispatchers.IO) {
+        dbHelper.writableDatabase.transaction {
+            delete("playlists", "id = ?", arrayOf(id.toString()))
+            delete("playlist_track_refs", "playlist_id = ?", arrayOf(id.toString()))
         }
     }
 

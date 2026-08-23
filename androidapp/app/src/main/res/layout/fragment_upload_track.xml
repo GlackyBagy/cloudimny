@@ -4,72 +4,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingHorizontal="24dp"
-    android:paddingTop="32dp"
+    android:paddingHorizontal="@dimen/player_padding_horizontal"
+    android:paddingTop="@dimen/space_xxxl"
     tools:context=".views.upload.UploadTrackFragment">
 
     <Button
         android:id="@+id/choose_file_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/choose_file_button"
-        android:textColor="@color/text_primary" />
+        android:layout_marginTop="@dimen/space_xxl"
+        android:text="@string/choose_file_button" />
 
     <TextView
         android:id="@+id/chosen_file_name"
+        style="@style/Widget.Cloudimny.Text.Hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/space_s"
         android:ellipsize="middle"
         android:maxLines="1"
-        android:text="@string/no_file_chosen"
-        android:textColor="@color/text_secondary"
-        android:textSize="13sp" />
+        android:text="@string/no_file_chosen" />
 
     <TextView
+        style="@style/Widget.Cloudimny.Text.FieldLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/space_xxl"
         android:labelFor="@id/track_title_input"
-        android:text="@string/track_title_label"
-        android:textColor="@color/text_primary"
-        android:textSize="16sp" />
+        android:text="@string/track_title_label" />
 
     <EditText
         android:id="@+id/track_title_input"
+        style="@style/Widget.Cloudimny.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_s"
         android:importantForAutofill="no"
-        android:inputType="text"
-        android:textColor="@color/text_primary"
-        android:textColorHint="@color/text_secondary" />
+        android:inputType="text" />
 
     <TextView
+        style="@style/Widget.Cloudimny.Text.FieldLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/space_l"
         android:labelFor="@id/track_artist_input"
-        android:text="@string/track_artist_label"
-        android:textColor="@color/text_primary"
-        android:textSize="16sp" />
+        android:text="@string/track_artist_label" />
 
     <EditText
         android:id="@+id/track_artist_input"
+        style="@style/Widget.Cloudimny.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_s"
         android:importantForAutofill="no"
-        android:inputType="text"
-        android:textColor="@color/text_primary"
-        android:textColorHint="@color/text_secondary" />
+        android:inputType="text" />
 
     <Button
         android:id="@+id/upload_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/space_xxxl"
         android:enabled="false"
-        android:text="@string/upload_button"
-        android:textColor="@color/text_primary" />
+        android:text="@string/upload_button" />
 
 </LinearLayout>

@@ -8,18 +8,18 @@
 
     <EditText
         android:id="@+id/search_input"
+        style="@style/Widget.Cloudimny.EditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:drawablePadding="8dp"
+        android:layout_margin="@dimen/space_l"
         android:drawableStart="@drawable/search_icon"
-        android:drawableTint="@color/text_secondary"
+        android:drawablePadding="@dimen/space_s"
+        android:drawableTint="?attr/colorOnSurfaceVariant"
         android:hint="@string/search_hint"
         android:importantForAutofill="no"
         android:inputType="text"
         android:maxLines="1"
-        android:textColor="@color/text_primary"
-        android:textColorHint="@color/text_secondary" />
+        android:paddingVertical="11dp" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -31,17 +31,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="24dp">
+            android:paddingBottom="@dimen/space_xxl">
 
             <TextView
                 android:id="@+id/search_tracks_header"
+                style="@style/Widget.Cloudimny.Text.SectionHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="@dimen/screen_padding_horizontal"
                 android:text="@string/search_tracks_header"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
@@ -49,20 +47,19 @@
                 android:id="@+id/search_tracks_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/space_s"
                 android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="@dimen/list_padding_horizontal"
                 tools:listitem="@layout/item_track" />
 
             <TextView
                 android:id="@+id/search_playlists_header"
+                style="@style/Widget.Cloudimny.Text.SectionHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="@dimen/screen_padding_horizontal"
+                android:layout_marginTop="@dimen/space_xxl"
                 android:text="@string/search_playlists_header"
-                android:textColor="@color/text_primary"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
@@ -70,20 +67,21 @@
                 android:id="@+id/search_playlists_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/space_s"
                 android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="@dimen/list_padding_horizontal"
                 tools:listitem="@layout/item_playlist" />
 
             <TextView
                 android:id="@+id/search_empty_label"
+                style="@style/Widget.Cloudimny.Text.Hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="@dimen/screen_padding_horizontal"
+                android:layout_marginTop="@dimen/space_s"
                 android:text="@string/no_search_results"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

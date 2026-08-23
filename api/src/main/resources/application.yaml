@@ -1,3 +1,10 @@
 spring:
   application:
     name: api
+
+app:
+  cover:
+    musicbrainz:
+      url: https://musicbrainz.org
+    coverartarchive:
+      url: https://coverartarchive.org

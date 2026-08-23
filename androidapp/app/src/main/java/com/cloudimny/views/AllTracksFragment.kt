@@ -11,6 +11,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cloudimny.R
 import com.cloudimny.player.PlayerViewModel
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.TrackMenuHelper
+import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.home.TrackAdapter
 import kotlinx.coroutines.launch
 
@@ -27,18 +29,41 @@ class AllTracksFragment : Fragment(R.layout.fragment_item_list) {
         }
         val swipeRefresh: SwipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
         swipeRefresh.setColorSchemeResources(R.color.secondary)
-        swipeRefresh.setOnRefreshListener { loadTracks(itemsList, swipeRefresh, forceRefresh = true) }
+        swipeRefresh.setOnRefreshListener {
+            loadTracks(
+                itemsList,
+                swipeRefresh,
+                forceRefresh = true
+            )
+        }
 
         loadTracks(itemsList, swipeRefresh, forceRefresh = false)
     }
 
-    private fun loadTracks(itemsList: RecyclerView, swipeRefresh: SwipeRefreshLayout, forceRefresh: Boolean) {
+    private fun loadTracks(
+        itemsList: RecyclerView,
+        swipeRefresh: SwipeRefreshLayout,
+        forceRefresh: Boolean
+    ) {
         swipeRefresh.isRefreshing = true
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val allTracks = MetadataService.loadAllTracks(requireContext(), forceRefresh)
-            itemsList.adapter = TrackAdapter(allTracks) { track ->
-                playerViewModel.play(allTracks, track)
+            runCatchingServerErrors {
+                val allTracks = MetadataService.loadAllTracks(requireContext(), forceRefresh)
+                itemsList.adapter = TrackAdapter(
+                    allTracks,
+                    { track ->
+                        playerViewModel.play(allTracks, track)
+                    },
+                    { track, view ->
+                        TrackMenuHelper.showTrackOptionsMenu(
+                            view,
+                            track,
+                            parentFragmentManager,
+                            viewLifecycleOwner.lifecycleScope
+                        )
+                    }
+                )
             }
             swipeRefresh.isRefreshing = false
         }

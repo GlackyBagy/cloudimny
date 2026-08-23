@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Держит Job загрузки обложки на самой ImageView, чтобы переиспользованная
+         строка списка могла отменить запрос предыдущей привязки -->
+    <item name="cover_request" type="id" />
+</resources>

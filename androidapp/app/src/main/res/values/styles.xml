@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ===== Text ===== -->
+    <style name="Widget.Cloudimny.Text.RowTitle" parent="">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">@dimen/text_row_title</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.RowSubtitle" parent="">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_row_subtitle</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.SectionHeader" parent="">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">@dimen/text_section</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.FieldLabel" parent="">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">@dimen/text_body_large</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.Hint" parent="">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_row_subtitle</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Text.NavLabel" parent="">
+        <item name="android:textSize">@dimen/text_nav_label</item>
+    </style>
+
+    <!-- ===== Images =====
+         importantForAccessibility задаётся в самих layout'ах: lint-проверка
+         ContentDescription не резолвит атрибуты через стиль -->
+    <style name="Widget.Cloudimny.Cover" parent="">
+        <item name="android:background">@drawable/cover_placeholder</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Cloudimny.Cover</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Cover.Large">
+        <item name="android:background">@drawable/cover_placeholder_large</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Cloudimny.Cover.Large</item>
+    </style>
+
+    <!-- Маска обложки и углы заглушки под ней берут один и тот же dimen, иначе
+         скруглённая картинка ложится на скруглённый фон с другим радиусом -->
+    <style name="ShapeAppearance.Cloudimny.Cover" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_cover</item>
+    </style>
+
+    <style name="ShapeAppearance.Cloudimny.Cover.Large">
+        <item name="cornerSize">@dimen/corner_cover_large</item>
+    </style>
+
+    <!-- ===== Buttons ===== -->
+    <style name="Widget.Cloudimny.IconButton" parent="">
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="tint">?attr/colorOnBackground</item>
+    </style>
+
+    <style name="Widget.Cloudimny.IconButton.Filled">
+        <item name="android:background">@drawable/circle_icon_button_background</item>
+    </style>
+
+    <style name="Widget.Cloudimny.IconButton.Outlined">
+        <item name="android:background">@drawable/circle_outline_button_background</item>
+        <item name="tint">?attr/colorPrimary</item>
+    </style>
+
+    <!-- ===== Inputs =====
+         importantForAutofill задаётся в самих layout'ах: lint-проверка
+         Autofill не резолвит атрибуты через стиль -->
+    <style name="Widget.Cloudimny.EditText" parent="">
+        <item name="android:background">@drawable/pill_edittext_background</item>
+        <item name="android:paddingHorizontal">14dp</item>
+        <item name="android:paddingVertical">@dimen/space_m</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textColorHint">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Button" parent="Widget.Material3.Button">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="cornerRadius">@dimen/corner_surface</item>
+    </style>
+
+    <!-- Обводка красится в primary, а не в colorOutline: палитра задана вручную,
+         M3-производные цвета из неё не выводятся. Текст остаётся тёмным —
+         primary на фоне background в буквах не читается -->
+    <style name="Widget.Cloudimny.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="cornerRadius">@dimen/corner_surface</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
+        <item name="strokeWidth">1.5dp</item>
+    </style>
+
+    <!-- ===== Containers ===== -->
+    <style name="Widget.Cloudimny.Row" parent="">
+        <item name="android:background">@drawable/track_row_background</item>
+        <item name="android:paddingHorizontal">@dimen/row_padding_horizontal</item>
+        <item name="android:paddingVertical">@dimen/row_padding_vertical</item>
+    </style>
+
+    <!-- ===== Dialogs =====
+         M3-диалог берёт фон из colorSurfaceContainerHigh, а кнопки красит в
+         colorPrimary. Первого в палитре нет — фон уезжает в серый baseline M3,
+         второе не читается: розовые буквы на розовом фоне. Поэтому и фон, и
+         цвет текста кнопок задаются явно -->
+    <style name="ThemeOverlay.Cloudimny.Dialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/Widget.Cloudimny.Dialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/Widget.Cloudimny.Dialog.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/Widget.Cloudimny.Dialog.Body</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Cloudimny.Dialog.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Cloudimny.Dialog.Button</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Cloudimny.Dialog.Button</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Dialog" parent="MaterialAlertDialog.Material3">
+        <item name="backgroundTint">?attr/colorSurface</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Cloudimny.Dialog</item>
+    </style>
+
+    <style name="ShapeAppearance.Cloudimny.Dialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/corner_surface</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Dialog.Title" parent="MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">@dimen/text_section</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Dialog.Body" parent="MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
+    <style name="Widget.Cloudimny.Dialog.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+    </style>
+</resources>

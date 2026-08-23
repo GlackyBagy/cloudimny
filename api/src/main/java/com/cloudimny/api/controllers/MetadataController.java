@@ -3,7 +3,6 @@ package com.cloudimny.api.controllers;
 import com.cloudimny.api.models.dto.ArtistDTO;
 import com.cloudimny.api.models.dto.PlaylistDTO;
 import com.cloudimny.api.models.dto.TrackDTO;
-import com.cloudimny.api.models.entities.Artist;
 import com.cloudimny.api.models.entities.Track;
 import com.cloudimny.api.models.mapping.ArtistMapper;
 import com.cloudimny.api.models.mapping.TrackMapper;
@@ -12,6 +11,7 @@ import com.cloudimny.api.models.payload.PlaylistPayload;
 import com.cloudimny.api.models.payload.TrackPayload;
 import com.cloudimny.api.services.ArtistService;
 import com.cloudimny.api.services.PlaylistService;
+import com.cloudimny.api.services.StorageService;
 import com.cloudimny.api.services.TrackService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +29,11 @@ public class MetadataController {
     private final TrackService trackService;
     private final PlaylistService playlistService;
     private final TrackMapper trackMapper;
+    private final StorageService storageService;
 
     @PostMapping("/artist")
     public Mono<Void> createArtist(@RequestBody ArtistPayload payload) {
-        return artistService.createFromNickname(payload.nickname()).then();
+        return artistService.createFromNicknameIfAbsent(payload.nickname()).then();
     }
 
     @PutMapping("/artist/{id}")
@@ -68,5 +69,13 @@ public class MetadataController {
                 .groupBy(Track::artistId)
                 .flatMap(grouped -> artistService.findById(grouped.key())
                         .flatMapMany(artist -> grouped.map(x -> trackMapper.toDTO(x, artist))));
+    }
+
+    @DeleteMapping("/track/{id}")
+    public Mono<Void> deleteTrack(@PathVariable UUID id) {
+        return trackService.findById(id)
+                .flatMap(track -> Mono.justOrEmpty(track.storageKey()))
+                .flatMap(storageService::deleteTrack)
+                .then(trackService.deleteByID(id));
     }
 }

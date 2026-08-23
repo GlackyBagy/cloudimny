@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.cloudimny.R
 import com.cloudimny.server.MetadataService
+import com.cloudimny.util.runCatchingServerErrors
 import com.cloudimny.views.MainActivity
 import com.cloudimny.views.home.PlaylistAdapter
 import kotlinx.coroutines.launch
@@ -33,13 +34,15 @@ class AllPlaylistsFragment : Fragment(R.layout.fragment_item_list) {
         swipeRefresh.isRefreshing = true
 
         viewLifecycleOwner.lifecycleScope.launch {
-            val allPlaylists = MetadataService.loadAllPlaylists(requireContext(), forceRefresh)
-            itemsList.adapter = PlaylistAdapter(allPlaylists) { playlist ->
-                val playlistId = playlist.id ?: return@PlaylistAdapter
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.main, PlaylistDetailFragment.newInstance(playlistId))
-                    .addToBackStack(null)
-                    .commit()
+            runCatchingServerErrors {
+                val allPlaylists = MetadataService.loadAllPlaylists(requireContext(), forceRefresh)
+                itemsList.adapter = PlaylistAdapter(allPlaylists) { playlist ->
+                    val playlistId = playlist.id ?: return@PlaylistAdapter
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.main, PlaylistDetailFragment.newInstance(playlistId))
+                        .addToBackStack(null)
+                        .commit()
+                }
             }
             swipeRefresh.isRefreshing = false
         }
