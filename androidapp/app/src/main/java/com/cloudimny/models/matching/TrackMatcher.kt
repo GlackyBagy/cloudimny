@@ -22,6 +22,10 @@ private val FEATURING_TAIL = Regex("\\b(feat|ft|featuring)\\b.*$")
 private val NON_ALPHANUMERIC = Regex("[^\\p{L}\\p{N}]+")
 private val COMBINING_MARKS = Regex("\\p{Mn}+")
 
+/** Straight and curly apostrophes: dropped rather than treated as a separator, so "don't" is one
+ * word — "dont" — instead of splitting into "don" and "t" once [NON_ALPHANUMERIC] runs. */
+private val APOSTROPHES = Regex("['’]")
+
 private const val TRIGRAM_SIZE = 3
 
 /**
@@ -146,11 +150,12 @@ object TrackMatcher {
     fun normalize(value: String): String {
         val withoutMarks = Normalizer.normalize(value.lowercase(), Normalizer.Form.NFD)
             .replace(COMBINING_MARKS, "")
+            .replace(APOSTROPHES, "")
             .let(::transliterate)
 
         val withoutBrackets = stripNoiseBrackets(withoutMarks)
         // скобки съели всё — значит шумом они не были, откатываемся
-        val base = if (withoutBrackets.isBlank()) withoutMarks else withoutBrackets
+        val base = withoutBrackets.ifBlank { withoutMarks }
 
         val words = base
             .replace(FEATURING_TAIL, " ")

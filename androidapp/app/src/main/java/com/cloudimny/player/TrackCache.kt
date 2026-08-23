@@ -31,4 +31,10 @@ object TrackCache {
                 StandaloneDatabaseProvider(context.applicationContext)
             ).also { instance = it }
         }
+
+    /** [streamUrl] is the cache key: media3's CacheDataSource falls back to the request URI when
+     * no custom key is set, and nothing in [toMediaItem] sets one. */
+    fun remove(context: Context, streamUrl: String) {
+        get(context).removeResource(streamUrl)
+    }
 }

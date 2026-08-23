@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.cloudimny.R
 import com.cloudimny.models.meta.Track
-import com.cloudimny.server.ServerRepository
+import com.cloudimny.server.MetadataService
 import com.cloudimny.views.upload.EditTrackFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
@@ -44,7 +44,7 @@ class TrackMenuHelper {
                                 track.id?.let { id ->
                                     lifecycleScope.launch {
                                         anchor.context.runCatchingServerErrors {
-                                            ServerRepository.deleteTrack(anchor.context, id)
+                                            MetadataService.deleteTrack(anchor.context, id)
                                             Toast.makeText(
                                                 anchor.context,
                                                 R.string.request_sent,

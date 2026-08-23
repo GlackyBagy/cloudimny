@@ -2,9 +2,11 @@ package com.cloudimny.server
 
 import android.content.Context
 import android.net.Uri
+import com.cloudimny.covers.CoverDiskCache
 import com.cloudimny.local.LocalDbRepository
 import com.cloudimny.models.meta.Playlist
 import com.cloudimny.models.meta.Track
+import com.cloudimny.player.TrackCache
 import java.util.UUID
 
 object MetadataService {
@@ -16,6 +18,7 @@ object MetadataService {
         }
 
         val tracks = ServerRepository.loadAllTracks(context)
+        prunePurgedTracks(context, keep = tracks.mapNotNull { it.id }.toSet())
         localDb.saveTracks(tracks)
         return tracks
     }
@@ -28,8 +31,28 @@ object MetadataService {
         }
 
         val playlists = ServerRepository.loadAllPlaylists(context)
+        val keep = playlists.mapNotNull { it.id }.toSet()
+        localDb.getAllPlaylistIds().filterNot { it in keep }.forEach { localDb.deletePlaylist(it) }
         localDb.savePlaylists(playlists)
         return playlists
+    }
+
+    suspend fun deleteTrack(context: Context, id: UUID) {
+        ServerRepository.deleteTrack(context, id)
+        purgeTrack(context, id)
+    }
+
+    /** Drops tracks the server no longer lists — deleted elsewhere, e.g. from another client. */
+    private suspend fun prunePurgedTracks(context: Context, keep: Set<UUID>) {
+        LocalDbRepository.get(context).getAllTrackIds()
+            .filterNot { it in keep }
+            .forEach { purgeTrack(context, it) }
+    }
+
+    private suspend fun purgeTrack(context: Context, id: UUID) {
+        LocalDbRepository.get(context).deleteTrack(id)
+        CoverDiskCache.delete(context, id)
+        TrackCache.remove(context, ServerRepository.streamingUrl(context, id))
     }
 
     suspend fun loadPlaylist(context: Context, id: UUID, forceRefresh: Boolean = false): Playlist {

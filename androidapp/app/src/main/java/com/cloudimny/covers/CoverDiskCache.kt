@@ -41,6 +41,10 @@ internal object CoverDiskCache {
         }
     }
 
+    suspend fun delete(context: Context, trackId: UUID): Unit = withContext(Dispatchers.IO) {
+        File(cacheDir(context), trackId.toString()).delete()
+    }
+
     suspend fun write(context: Context, trackId: UUID, bytes: ByteArray) {
         withContext(Dispatchers.IO) {
             val dir = cacheDir(context)
