@@ -1,6 +1,20 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
+
+// Absent on machines without the release key (CI included): release then falls back to
+// building unsigned rather than failing the whole build.
+val keystoreProperties = Properties().apply {
+    val propertiesFile = rootProject.file("keystore.properties")
+    if (propertiesFile.exists()) propertiesFile.inputStream().use(::load)
+}
+
+// Passwords can come from the RELEASE_STORE_PASSWORD/RELEASE_KEY_PASSWORD env vars instead of
+// keystore.properties, for a one-off signed build without writing the password to disk.
+fun signingProperty(key: String, envVar: String): String? =
+    keystoreProperties.getProperty(key) ?: System.getenv(envVar)
 
 android {
     namespace = "com.cloudimny"
@@ -18,6 +32,21 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        val releaseStorePassword = signingProperty("storePassword", "RELEASE_STORE_PASSWORD")
+        val releaseKeyPassword = signingProperty("keyPassword", "RELEASE_KEY_PASSWORD")
+        if (releaseStorePassword != null && releaseKeyPassword != null) {
+            create("release") {
+                storeFile = rootProject.file(
+                    keystoreProperties.getProperty("storeFile") ?: "release.keystore"
+                )
+                storePassword = releaseStorePassword
+                keyAlias = keystoreProperties.getProperty("keyAlias") ?: "cloudimny"
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -26,6 +55,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
     compileOptions {
