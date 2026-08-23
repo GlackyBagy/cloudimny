@@ -4,7 +4,7 @@
 
     <!-- Setup -->
     <string name="setup_title">Let\'s setup\nyour server</string>
-    <string name="setup_address_label">Server URI with port</string>
+    <string name="setup_address_label">Server address with SSH port</string>
     <string name="setup_address_hint">example.com:22 or 1.1.1.1:22</string>
     <string name="setup_username_label">SSH username</string>
     <string name="setup_username_hint">root</string>
